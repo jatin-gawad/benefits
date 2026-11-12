@@ -1,0 +1,332 @@
+<UserControl x:Class="RenewalReviewBuilder.App.Views.ClientBillingDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F7F9FC">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="BillingTextBrush" Color="#071B4D" />
+        <SolidColorBrush x:Key="BillingMutedBrush" Color="#64748B" />
+        <SolidColorBrush x:Key="BillingBorderBrush" Color="#DDE5F0" />
+        <SolidColorBrush x:Key="BillingBlueBrush" Color="#0057D8" />
+        <SolidColorBrush x:Key="BillingTealBrush" Color="#0F8B8D" />
+        <SolidColorBrush x:Key="BillingGreenBrush" Color="#16A34A" />
+        <SolidColorBrush x:Key="BillingOrangeBrush" Color="#F97316" />
+        <SolidColorBrush x:Key="BillingRedBrush" Color="#DC2626" />
+
+        <Style x:Key="BillingCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource BillingBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+
+        <Style x:Key="BillingLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource BillingMutedBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style x:Key="BillingTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource BillingTextBrush}" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <Style x:Key="BillingButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource BillingBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource BillingTextBrush}" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style x:Key="BillingPrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource BillingButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource BillingBlueBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BillingBlueBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style x:Key="BillingComboStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource BillingBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource BillingTextBrush}" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="8,0" />
+        </Style>
+
+        <Style x:Key="BillingGridStyle" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="RowHeaderWidth" Value="0" />
+            <Setter Property="BorderBrush" Value="{StaticResource BillingBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E5EAF2" />
+            <Setter Property="VerticalGridLinesBrush" Value="#E5EAF2" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Grid Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                    <TextBlock Text="Client Workspace" Foreground="{StaticResource BillingBlueBrush}" FontSize="12" FontWeight="SemiBold" />
+                    <TextBlock Text="  &gt;  " Style="{StaticResource BillingLabelStyle}" />
+                    <TextBlock Text="Billing" Foreground="{StaticResource BillingTextBrush}" FontSize="12" FontWeight="SemiBold" />
+                </StackPanel>
+                <TextBlock Text="Billing History &amp; Integrity" Foreground="{StaticResource BillingTextBrush}" FontSize="25" FontWeight="Bold" />
+                <TextBlock x:Name="HeaderSubtitleTextBlock" Text="Select a client to load billing history." Style="{StaticResource BillingLabelStyle}" FontSize="13" Margin="0,5,0,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                <Button Content="Select Billing Files" Style="{StaticResource BillingButtonStyle}" Width="150" Click="SelectBillingPdfs_Click" />
+                <Button Content="Import Selected" Style="{StaticResource BillingPrimaryButtonStyle}" Width="140" Margin="8,0,0,0" Click="ImportSelected_Click" />
+                <Button Content="Export Excel" Style="{StaticResource BillingButtonStyle}" Width="118" Margin="8,0,0,0" Click="ExportHistory_Click" />
+                <Button Content="Delete" Style="{StaticResource BillingButtonStyle}" Width="86" Margin="8,0,0,0" Click="DeleteSelected_Click" />
+            </StackPanel>
+        </Grid>
+
+        <UniformGrid Columns="6" Margin="0,0,0,14">
+            <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Statements" Style="{StaticResource BillingLabelStyle}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="StatementCountTextBlock" Text="0" Foreground="{StaticResource BillingTextBrush}" FontSize="22" FontWeight="Bold" Margin="0,8,0,0" />
+                    <TextBlock Text="saved months / versions" Style="{StaticResource BillingLabelStyle}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Employees" Style="{StaticResource BillingLabelStyle}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="EmployeeCountTextBlock" Text="0" Foreground="{StaticResource BillingTextBrush}" FontSize="22" FontWeight="Bold" Margin="0,8,0,0" />
+                    <TextBlock Text="latest statement" Style="{StaticResource BillingLabelStyle}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="EE Premium" Style="{StaticResource BillingLabelStyle}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="EePremiumTextBlock" Text="$0.00" Foreground="{StaticResource BillingTextBrush}" FontSize="22" FontWeight="Bold" Margin="0,8,0,0" />
+                    <TextBlock Text="latest statement" Style="{StaticResource BillingLabelStyle}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="ER Premium" Style="{StaticResource BillingLabelStyle}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="ErPremiumTextBlock" Text="$0.00" Foreground="{StaticResource BillingTextBrush}" FontSize="22" FontWeight="Bold" Margin="0,8,0,0" />
+                    <TextBlock Text="latest statement incl. tax" Style="{StaticResource BillingLabelStyle}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Total Premium" Style="{StaticResource BillingLabelStyle}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="TotalPremiumTextBlock" Text="$0.00" Foreground="{StaticResource BillingTextBrush}" FontSize="22" FontWeight="Bold" Margin="0,8,0,0" />
+                    <TextBlock Text="latest statement" Style="{StaticResource BillingLabelStyle}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource BillingCardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Integrity" Style="{StaticResource BillingLabelStyle}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="IntegrityScoreTextBlock" Text="N/A" Foreground="{StaticResource BillingTextBrush}" FontSize="22" FontWeight="Bold" Margin="0,8,0,0" />
+                    <TextBlock x:Name="IntegrityStatusTextBlock" Text="No billing imported" Style="{StaticResource BillingLabelStyle}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Grid Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="280" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="SelectedFilesTextBlock" Text="No billing file selected." Style="{StaticResource BillingLabelStyle}" VerticalAlignment="Center" />
+            <TextBlock x:Name="ImportStatusTextBlock" Grid.Column="1" Text="Ready" Foreground="{StaticResource BillingMutedBrush}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" TextWrapping="Wrap" />
+        </Grid>
+
+        <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,0,14">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,10">
+                    <TextBlock Text="Billing History" Style="{StaticResource BillingTitleStyle}" DockPanel.Dock="Left" />
+                    <TextBlock Text="Select a statement to inspect its details" Style="{StaticResource BillingLabelStyle}" DockPanel.Dock="Right" />
+                </DockPanel>
+                <DataGrid x:Name="HistoryGrid"
+                          Style="{StaticResource BillingGridStyle}"
+                          Height="226"
+                          SelectionMode="Single"
+                          SelectionChanged="HistoryGrid_SelectionChanged"
+                          MouseDoubleClick="HistoryGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Month" Binding="{Binding StatementPeriodText}" Width="84" />
+                        <DataGridTextColumn Header="Carrier" Binding="{Binding Carrier}" Width="108" />
+                        <DataGridTextColumn Header="Version" Binding="{Binding VersionText}" Width="72" />
+                        <DataGridTextColumn Header="EE Premium" Binding="{Binding TotalEmployeePremiumText}" Width="112" />
+                        <DataGridTextColumn Header="ER Premium" Binding="{Binding TotalEmployerPremiumText}" Width="112" />
+                        <DataGridTextColumn Header="Total Premium" Binding="{Binding TotalPremiumText}" Width="118" />
+                        <DataGridTextColumn Header="Employees" Binding="{Binding EmployeeCountText}" Width="88" />
+                        <DataGridTextColumn Header="Integrity" Binding="{Binding IntegrityScoreText}" Width="78" />
+                        <DataGridTextColumn Header="Status" Binding="{Binding ImportStatus}" Width="112" />
+                        <DataGridTextColumn Header="Source File" Binding="{Binding SourceFileName}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource BillingCardStyle}" Margin="0,0,0,14" Padding="14,10">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,7">
+                    <TextBlock Text="Billing Integrity Report" Style="{StaticResource BillingTitleStyle}" DockPanel.Dock="Left" />
+                    <TextBlock x:Name="IntegrityReportStatusTextBlock" Text="No statement selected" Style="{StaticResource BillingLabelStyle}" DockPanel.Dock="Right" />
+                </DockPanel>
+                <UniformGrid Columns="8">
+                    <StackPanel>
+                        <TextBlock Text="Passed" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="PassedChecksTextBlock" Text="0" Foreground="{StaticResource BillingGreenBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Warnings" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="WarningChecksTextBlock" Text="0" Foreground="{StaticResource BillingOrangeBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Failed" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="FailedChecksTextBlock" Text="0" Foreground="{StaticResource BillingRedBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Duplicates" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="DuplicateRowsTextBlock" Text="0" Foreground="{StaticResource BillingTextBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="New Hires" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="NewHireTextBlock" Text="0" Foreground="{StaticResource BillingTealBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Terminations" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="TerminationTextBlock" Text="0" Foreground="{StaticResource BillingTextBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Salary" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="SalaryChangeTextBlock" Text="0" Foreground="{StaticResource BillingTextBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Coverage / Tier" Style="{StaticResource BillingLabelStyle}" FontSize="11" />
+                        <TextBlock x:Name="CoverageChangeTextBlock" Text="0" Foreground="{StaticResource BillingTextBrush}" FontSize="16" FontWeight="Bold" />
+                    </StackPanel>
+                </UniformGrid>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource BillingCardStyle}">
+            <StackPanel>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="135" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="145" />
+                        <ColumnDefinition Width="150" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Statement Detail" Style="{StaticResource BillingTitleStyle}" VerticalAlignment="Center" />
+                    <ComboBox x:Name="ClassFilterComboBox" Grid.Column="1" Style="{StaticResource BillingComboStyle}" Margin="8,0,0,0" SelectionChanged="DetailFilter_SelectionChanged" />
+                    <ComboBox x:Name="BenefitFilterComboBox" Grid.Column="2" Style="{StaticResource BillingComboStyle}" Margin="8,0,0,0" SelectionChanged="DetailFilter_SelectionChanged" />
+                    <ComboBox x:Name="ValidationFilterComboBox" Grid.Column="3" Style="{StaticResource BillingComboStyle}" Margin="8,0,0,0" SelectionChanged="DetailFilter_SelectionChanged" />
+                    <ComboBox x:Name="ChangeFilterComboBox" Grid.Column="4" Style="{StaticResource BillingComboStyle}" Margin="8,0,0,0" SelectionChanged="DetailFilter_SelectionChanged" />
+                </Grid>
+
+                <TabControl x:Name="StatementDetailTabControl">
+                    <TabItem Header="Employee Rows">
+                        <DataGrid x:Name="DetailGrid" Style="{StaticResource BillingGridStyle}" Height="320">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Status" Binding="{Binding ValidationStatus}" Width="82" />
+                                <DataGridTextColumn Header="Class" Binding="{Binding ClassCode}" Width="62" />
+                                <DataGridTextColumn Header="Plan" Binding="{Binding PlanCode}" Width="66" />
+                                <DataGridTextColumn Header="Certificate" Binding="{Binding CertificateId}" Width="118" />
+                                <DataGridTextColumn Header="Employee" Binding="{Binding EmployeeName}" Width="150" />
+                                <DataGridTextColumn Header="Current Premium" Binding="{Binding CurrentMonthPremiumText}" Width="104" />
+                                <DataGridTextColumn Header="Adjustment" Binding="{Binding PriorPeriodAdjustmentText}" Width="92" />
+                                <DataGridTextColumn Header="EE Premium" Binding="{Binding EmployeePremiumText}" Width="94" />
+                                <DataGridTextColumn Header="ER Premium" Binding="{Binding EmployerPremiumText}" Width="94" />
+                                <DataGridTextColumn Header="Annual Earnings" Binding="{Binding AnnualEarningsText}" Width="112" />
+                                <DataGridTextColumn Header="Cost Div" Binding="{Binding CostDivision}" Width="72" />
+                                <DataGridTextColumn Header="Retro" Binding="{Binding RetroMonth}" Width="64" />
+                                <DataGridTextColumn Header="Life Vol" Binding="{Binding LifeVolumeText}" Width="88" />
+                                <DataGridTextColumn Header="Life Prem" Binding="{Binding LifePremiumText}" Width="82" />
+                                <DataGridTextColumn Header="AD&amp;D Prem" Binding="{Binding AdAndDPremiumText}" Width="86" />
+                                <DataGridTextColumn Header="LTD Prem" Binding="{Binding LtdPremiumText}" Width="82" />
+                                <DataGridTextColumn Header="Health" Binding="{Binding HealthPremiumText}" Width="82" />
+                                <DataGridTextColumn Header="Dental" Binding="{Binding DentalPremiumText}" Width="82" />
+                                <DataGridTextColumn Header="EFAP" Binding="{Binding EfapPremiumText}" Width="74" />
+                                <DataGridTextColumn Header="Virtual" Binding="{Binding VirtualHealthcarePremiumText}" Width="76" />
+                                <DataGridTextColumn Header="Flex" Binding="{Binding FlexAdminFeeText}" Width="68" />
+                                <DataGridTextColumn Header="Member AD&amp;D" Binding="{Binding MemberAdAndDPremiumText}" Width="90" />
+                                <DataGridTextColumn Header="GST/HST" Binding="{Binding GstHstText}" Width="78" />
+                                <DataGridTextColumn Header="Row Total" Binding="{Binding RowTotalText}" Width="88" />
+                                <DataGridTextColumn Header="Flags" Binding="{Binding ValidationFlags}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                    <TabItem Header="Validation">
+                        <DataGrid x:Name="ValidationGrid" Style="{StaticResource BillingGridStyle}" Height="320">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="82" />
+                                <DataGridTextColumn Header="Level" Binding="{Binding ValidationLevel}" Width="90" />
+                                <DataGridTextColumn Header="Check" Binding="{Binding CheckName}" Width="170" />
+                                <DataGridTextColumn Header="Expected" Binding="{Binding ExpectedAmountText}" Width="92" />
+                                <DataGridTextColumn Header="Actual" Binding="{Binding ActualAmountText}" Width="92" />
+                                <DataGridTextColumn Header="Difference" Binding="{Binding DifferenceAmountText}" Width="92" />
+                                <DataGridTextColumn Header="Class" Binding="{Binding ClassCode}" Width="58" />
+                                <DataGridTextColumn Header="Certificate" Binding="{Binding CertificateId}" Width="116" />
+                                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                    <TabItem Header="Rate Table">
+                        <DataGrid x:Name="RateGrid" Style="{StaticResource BillingGridStyle}" Height="320">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Benefit" Binding="{Binding Benefit}" Width="145" />
+                                <DataGridTextColumn Header="Class" Binding="{Binding ClassCode}" Width="68" />
+                                <DataGridTextColumn Header="Plan" Binding="{Binding PlanCode}" Width="64" />
+                                <DataGridTextColumn Header="Coverage" Binding="{Binding Tier}" Width="88" />
+                                <DataGridTextColumn Header="Basis" Binding="{Binding VolumeBasis}" Width="180" />
+                                <DataGridTextColumn Header="EE Rate" Binding="{Binding EmployeeRateText}" Width="92" />
+                                <DataGridTextColumn Header="ER Rate" Binding="{Binding EmployerRateText}" Width="92" />
+                                <DataGridTextColumn Header="Carrier Rate" Binding="{Binding CarrierRateText}" Width="100" />
+                                <DataGridTextColumn Header="Records" Binding="{Binding RecordCount}" Width="72" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding RateStatus}" Width="104" />
+                                <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                    <TabItem Header="Employee Changes">
+                        <DataGrid x:Name="ChangeGrid" Style="{StaticResource BillingGridStyle}" Height="320">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" Width="84" />
+                                <DataGridTextColumn Header="Change" Binding="{Binding ChangeType}" Width="130" />
+                                <DataGridTextColumn Header="Employee" Binding="{Binding EmployeeName}" Width="150" />
+                                <DataGridTextColumn Header="Certificate" Binding="{Binding CertificateId}" Width="116" />
+                                <DataGridTextColumn Header="Field" Binding="{Binding FieldName}" Width="120" />
+                                <DataGridTextColumn Header="Previous" Binding="{Binding PreviousValue}" Width="130" />
+                                <DataGridTextColumn Header="Current" Binding="{Binding CurrentValue}" Width="130" />
+                                <DataGridTextColumn Header="Difference" Binding="{Binding DifferenceAmountText}" Width="94" />
+                                <DataGridTextColumn Header="Change %" Binding="{Binding ChangePercentText}" Width="84" />
+                                <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                </TabControl>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

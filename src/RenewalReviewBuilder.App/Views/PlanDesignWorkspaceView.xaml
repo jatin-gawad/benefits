@@ -1,0 +1,2014 @@
+<UserControl x:Class="RenewalReviewBuilder.App.Views.PlanDesignWorkspaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:RenewalReviewBuilder.App.Models"
+             xmlns:views="clr-namespace:RenewalReviewBuilder.App.Views"
+             MinWidth="0"
+             SizeChanged="PlanDesignWorkspaceView_SizeChanged"
+             Background="{StaticResource DsBackgroundBrush}">
+    <UserControl.Resources>
+        <views:StringNotEmptyToVisibilityConverter x:Key="StringNotEmptyToVisibilityConverter" />
+
+        <SolidColorBrush x:Key="PlanPurpleBrush" Color="{StaticResource DsPlanAccentColor}" />
+        <SolidColorBrush x:Key="PlanDeepPurpleBrush" Color="#4C1D95" />
+        <SolidColorBrush x:Key="PlanAccentPurpleBrush" Color="#8B5CF6" />
+        <SolidColorBrush x:Key="PlanSoftPurpleBrush" Color="{StaticResource DsPlanAccentSoftColor}" />
+        <SolidColorBrush x:Key="PlanLightBorderBrush" Color="#E5E7EB" />
+        <SolidColorBrush x:Key="PlanTextPrimaryBrush" Color="#111827" />
+        <SolidColorBrush x:Key="PlanTextSecondaryBrush" Color="#64748B" />
+
+        <LinearGradientBrush x:Key="PlanPurpleGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#7C3AED" Offset="0" />
+            <GradientStop Color="#5B21B6" Offset="1" />
+        </LinearGradientBrush>
+
+        <Style x:Key="PlanModernCard" TargetType="Border" BasedOn="{StaticResource DsCard}">
+            <Setter Property="BorderBrush" Value="{StaticResource PlanLightBorderBrush}" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="18" />
+        </Style>
+
+        <Style x:Key="PlanKpiCard" TargetType="Border" BasedOn="{StaticResource PlanModernCard}">
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="MinHeight" Value="92" />
+            <Setter Property="Margin" Value="0,0,12,12" />
+        </Style>
+
+        <Style x:Key="PlanPurpleButton" TargetType="Button" BasedOn="{StaticResource DsPrimaryButton}">
+            <Setter Property="Background" Value="{StaticResource PlanPurpleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource PlanPurpleBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+        <Style x:Key="PlanOutlineButton" TargetType="Button" BasedOn="{StaticResource DsSecondaryButton}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource PlanPurpleBrush}" />
+            <Setter Property="Background" Value="{StaticResource PlanPurpleBrush}" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+        <Style x:Key="PlanGhostButton" TargetType="Button" BasedOn="{StaticResource DsSecondaryButton}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource PlanPurpleBrush}" />
+            <Setter Property="Background" Value="{StaticResource PlanPurpleBrush}" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+        <Style x:Key="PlanHeaderChip" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource PlanLightBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="12,8" />
+        </Style>
+
+        <Style x:Key="PlanWorkspaceTabItem" TargetType="TabItem">
+            <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource PlanTextSecondaryBrush}" />
+            <Setter Property="Padding" Value="4,5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Root" Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,0,3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource PlanPurpleBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource PlanPurpleBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource PlanPurpleBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PlanTable" TargetType="DataGrid" BasedOn="{StaticResource DsDataGrid}">
+            <Setter Property="BorderBrush" Value="{StaticResource PlanLightBorderBrush}" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#EEF2F7" />
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+            <Setter Property="ColumnHeaderHeight" Value="42" />
+            <Setter Property="RowBackground" Value="White" />
+            <Setter Property="AlternatingRowBackground" Value="#FCFCFD" />
+        </Style>
+
+        <Style x:Key="PlanTableTextBlock" TargetType="TextBlock" BasedOn="{StaticResource DsTableTextBlock}">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{StaticResource PlanTextPrimaryBrush}" />
+            <Setter Property="LineHeight" Value="18" />
+        </Style>
+
+        <Style x:Key="PlanComparisonCellTextBlock" TargetType="TextBlock" BasedOn="{StaticResource DsTableTextBlock}">
+            <Setter Property="Foreground" Value="{StaticResource PlanTextPrimaryBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="LineHeight" Value="14" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="PlanComparisonBenefitTextBlock" TargetType="TextBlock" BasedOn="{StaticResource DsTableTextBlock}">
+            <Setter Property="Foreground" Value="{StaticResource PlanTextPrimaryBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <DataTemplate x:Key="SummaryCardTemplate" DataType="{x:Type models:PlanDesignSummaryCard}">
+            <Border Style="{StaticResource PlanModernCard}" Margin="0,0,12,0" MinHeight="112">
+                <StackPanel>
+                    <TextBlock Text="{Binding Label}" Style="{StaticResource DsSmallText}" />
+                    <TextBlock Text="{Binding Value}" Style="{StaticResource DsCardTitle}" FontSize="15" Margin="0,10,0,0" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Detail}" Style="{StaticResource DsSmallText}" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FlagTemplate" DataType="{x:Type models:PlanDesignFlag}">
+            <Grid Margin="0,0,0,11">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Ellipse Width="8" Height="8" Fill="{Binding IndicatorBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                <TextBlock Grid.Column="1" Text="{Binding Label}" Style="{StaticResource DsSmallText}" FontSize="13" />
+                <Border Grid.Column="2" Background="#FFF7ED" CornerRadius="8" Padding="7,2" Visibility="{Binding Value, Converter={StaticResource StringNotEmptyToVisibilityConverter}, FallbackValue=Visible}">
+                    <TextBlock Text="{Binding Value}" Foreground="#EA580C" FontSize="12" FontWeight="SemiBold" />
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailTemplate" DataType="{x:Type models:FlexibleBenefitDetailDisplayRow}">
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,10,0" />
+                <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" Margin="0,0,10,0" />
+                <TextBlock Grid.Column="2" Text="{Binding SourcePage}" Style="{StaticResource DsSmallText}" />
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="PlanWorkspaceContentTabControl" TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <ContentPresenter ContentSource="SelectedContent" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PlanSecondaryNavigationButton" TargetType="Button">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="7,7" />
+            <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource PlanTextSecondaryBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="SecondaryTabRoot"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SecondaryTabRoot" Property="Background" Value="#F2F6FD" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RawExtractionTableTextBlock" TargetType="TextBlock" BasedOn="{StaticResource DsTableTextBlock}">
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="12,10,14,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="PlanWorkspaceHeaderGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="PlanWorkspaceHeaderTitleColumn" Width="*" />
+                <ColumnDefinition x:Name="PlanWorkspaceHeaderActionsColumn" Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock x:Name="PlanWorkspaceTitleTextBlock"
+                           Text="Plan Design"
+                           Style="{StaticResource DsPageTitle}" />
+                <TextBlock x:Name="PlanWorkspaceSubtitleTextBlock"
+                           Text="Select a client to load client-specific plan design details."
+                           Style="{StaticResource DsBodyText}"
+                           TextWrapping="Wrap"
+                           MaxWidth="560"
+                           HorizontalAlignment="Left"
+                           Margin="0,6,0,0" />
+            </StackPanel>
+
+            <StackPanel x:Name="PlanWorkspaceHeaderActionsPanel" Grid.Column="1" HorizontalAlignment="Right">
+                <WrapPanel x:Name="PlanWorkspaceHeaderPrimaryActions" HorizontalAlignment="Right" Margin="0,0,0,10">
+                    <Border Style="{StaticResource PlanHeaderChip}" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Renewal Date" Style="{StaticResource DsSmallText}" Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding RenewalDateText}" Foreground="{StaticResource PlanTextPrimaryBrush}" FontWeight="SemiBold" FontSize="13" />
+                        </StackPanel>
+                    </Border>
+                    <Button Content="+  New Plan Scenario"
+                            Style="{StaticResource PlanPurpleButton}"
+                            Margin="0,0,10,0" />
+                    <Button Content="..."
+                            Width="42"
+                            Style="{StaticResource PlanGhostButton}" />
+                </WrapPanel>
+                <WrapPanel x:Name="PlanWorkspaceHeaderSelectorActions" HorizontalAlignment="Right">
+                    <Border Style="{StaticResource PlanHeaderChip}"
+                            MaxWidth="310"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Text="Source Document" Style="{StaticResource DsSmallText}" />
+                            <TextBlock Text="{Binding SourceDocumentText}"
+                                       Foreground="{StaticResource PlanTextPrimaryBrush}"
+                                       FontWeight="SemiBold"
+                                       FontSize="12"
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding SourceDocumentText}" />
+                        </StackPanel>
+                    </Border>
+                    <Button Content="View Source Document"
+                            Style="{StaticResource PlanOutlineButton}"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Top"
+                            Click="ViewSourceDocument_Click" />
+                    <Button Content="Refresh Data"
+                            Style="{StaticResource PlanPurpleButton}"
+                            VerticalAlignment="Top"
+                            Click="RefreshData_Click" />
+                </WrapPanel>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1"
+                BorderBrush="{StaticResource PlanLightBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Margin="0,12,0,0">
+            <WrapPanel x:Name="PlanSecondaryNavigationPanel">
+                <Button Content="Class Comparison" Tag="Class Comparison" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Plan Design Comparison" Tag="Plan Design Comparison" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Benefit Summary" Tag="Benefit Summary" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Benefit Administration" Tag="Benefit Administration" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Flexible Benefits" Tag="Flexible Benefits" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Rate Comparison" Tag="Rate Comparison" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Cost Analysis" Tag="Cost Analysis" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Value Score" Tag="Value Score" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Summary" Tag="Summary" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+                <Button Content="Notes &amp; History" Tag="Notes &amp; History" Style="{StaticResource PlanSecondaryNavigationButton}" Click="PlanSecondaryNavigation_Click" />
+            </WrapPanel>
+        </Border>
+
+        <TabControl Grid.Row="2"
+                    x:Name="WorkspaceTabs"
+                    Style="{StaticResource PlanWorkspaceContentTabControl}"
+                    ItemContainerStyle="{StaticResource PlanWorkspaceTabItem}"
+                    Visibility="{Binding PlanDesignContentVisibility}"
+                    SelectionChanged="WorkspaceTabs_SelectionChanged">
+            <TabItem Header="Class Comparison" IsSelected="True">
+                <views:ClassComparisonWorkspaceView x:Name="ClassComparisonWorkspace"
+                                                    DataContext="{Binding ClassComparison}"
+                                                    Margin="0,9,0,0"
+                                                    RetryRequested="ClassComparison_RetryRequested"
+                                                    NavigateTabRequested="ClassComparison_NavigateTabRequested" />
+            </TabItem>
+
+            <TabItem Header="Plan Design Comparison">
+                <StackPanel>
+                <Grid Margin="0,18,0,0"
+                      Visibility="{Binding PlanComparison.ComparisonContentVisibility}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Style="{StaticResource DsActionToolbar}" Padding="14" Margin="0,0,0,12">
+                        <StackPanel>
+                            <WrapPanel Margin="0,0,0,12">
+                                <StackPanel Margin="0,0,24,6">
+                                    <TextBlock Text="Client" Style="{StaticResource DsSmallText}" />
+                                    <TextBlock Text="{Binding ClientName}" Style="{StaticResource DsCardTitle}" ToolTip="{Binding ClientName}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,24,6">
+                                    <TextBlock Text="Carrier" Style="{StaticResource DsSmallText}" />
+                                    <TextBlock Text="{Binding Carrier}" Style="{StaticResource DsCardTitle}" ToolTip="{Binding Carrier}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,24,6">
+                                    <TextBlock Text="Policy" Style="{StaticResource DsSmallText}" />
+                                    <TextBlock Text="{Binding PolicyNumberText}" Style="{StaticResource DsCardTitle}" ToolTip="{Binding PolicyNumberText}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,24,6">
+                                    <TextBlock Text="Source document" Style="{StaticResource DsSmallText}" />
+                                    <TextBlock Text="{Binding SourceDocumentText}" Style="{StaticResource DsCardTitle}" MaxWidth="230" TextTrimming="CharacterEllipsis" ToolTip="{Binding SourceDocumentText}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,24,6">
+                                    <TextBlock Text="Effective date" Style="{StaticResource DsSmallText}" />
+                                    <TextBlock Text="{Binding EffectiveDateText}" Style="{StaticResource DsCardTitle}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,6">
+                                    <TextBlock Text="Selected comparison" Style="{StaticResource DsSmallText}" />
+                                    <TextBlock Text="{Binding PlanComparison.SelectedScenarioName}" Style="{StaticResource DsCardTitle}" MaxWidth="220" TextTrimming="CharacterEllipsis" ToolTip="{Binding PlanComparison.SelectedScenarioName}" />
+                                </StackPanel>
+                            </WrapPanel>
+
+                            <WrapPanel VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,14,6">
+                                    <TextBlock Text="Baseline" Style="{StaticResource DsSmallText}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <ComboBox Width="150" Height="30"
+                                              ItemsSource="{Binding PlanComparison.BaselineOptions}"
+                                              DisplayMemberPath="DisplayName"
+                                              SelectedValuePath="Key"
+                                              SelectedValue="{Binding PlanComparison.SelectedBaselineKey, Mode=TwoWay}"
+                                              AutomationProperties.Name="Comparison baseline" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,14,6">
+                                    <TextBlock Text="Compare to" Style="{StaticResource DsSmallText}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <ComboBox Width="190" Height="30"
+                                              ItemsSource="{Binding PlanComparison.ScenarioOptions}"
+                                              DisplayMemberPath="DisplayName"
+                                              SelectedValuePath="Key"
+                                              SelectedValue="{Binding PlanComparison.SelectedScenarioKey, Mode=TwoWay}"
+                                              AutomationProperties.Name="Comparison scenario" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,14,6">
+                                    <TextBlock Text="View" Style="{StaticResource DsSmallText}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <RadioButton Content="All Benefits" GroupName="PlanComparisonView" Click="PlanComparisonAllBenefits_Click" Margin="0,0,5,0" />
+                                    <RadioButton Content="Changed Only" GroupName="PlanComparisonView" Click="PlanComparisonChangedOnly_Click" Margin="0,0,5,0" />
+                                    <RadioButton Content="Key Benefits Only" GroupName="PlanComparisonView" Click="PlanComparisonKeyBenefits_Click" />
+                                </StackPanel>
+                                <TextBox Width="180" Height="30" Margin="0,0,14,6"
+                                         Text="{Binding PlanComparison.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Search benefits and provisions"
+                                         AutomationProperties.Name="Search comparison provisions" />
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,14,6">
+                                    <CheckBox Content="Highlight differences"
+                                              IsChecked="{Binding PlanComparison.HighlightDifferences, Mode=TwoWay}"
+                                              VerticalAlignment="Center"
+                                              AutomationProperties.Name="Highlight differences" />
+                                </StackPanel>
+                                <Button Content="Expand All" Style="{StaticResource DsSecondaryButton}" Margin="0,0,6,6" Click="PlanComparisonExpandAll_Click" />
+                                <Button Content="Collapse All" Style="{StaticResource DsSecondaryButton}" Margin="0,0,6,6" Click="PlanComparisonCollapseAll_Click" />
+                                <Button Content="Export Comparison" Style="{StaticResource DsSecondaryButton}" Margin="0,0,6,6" Click="DownloadPlanDesignSummary_Click" />
+                                <Button Content="Download" Style="{StaticResource DsPrimaryButton}" Margin="0,0,6,6" Click="DownloadPlanDesignSummary_Click" />
+                                <Button Content="More Actions" Style="{StaticResource DsSecondaryButton}" Margin="0,0,0,6">
+                                    <Button.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="View Source Document" Click="ViewSourceDocument_Click" />
+                                            <MenuItem Header="Reset Filters" Click="PlanComparisonResetFilters_Click" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding PlanComparison.SummaryMetrics}" Margin="0,0,0,12">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource PlanModernCard}" Padding="12,10" MinWidth="145" Margin="0,0,10,10">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Label}" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding Value}" FontWeight="SemiBold" FontSize="14" Foreground="{Binding ForegroundBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Detail}" Style="{StaticResource DsSmallText}" Margin="0,3,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Grid.Row="2"
+                            Style="{StaticResource DsEmptyStateCard}"
+                            Margin="0,0,0,12"
+                            Visibility="{Binding PlanComparison.NoMatchesVisibility}">
+                        <TextBlock Text="{Binding PlanComparison.NoMatchesMessage}" Style="{StaticResource DsBodyText}" TextWrapping="Wrap" />
+                    </Border>
+
+                    <Border Grid.Row="3" Style="{StaticResource PlanModernCard}" Padding="0">
+                        <DataGrid x:Name="PlanComparisonDataGrid"
+                                  ItemsSource="{Binding PlanComparison.DisplayRows}"
+                                  Style="{StaticResource PlanTable}"
+                                  FrozenColumnCount="1"
+                                  MinHeight="460"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True"
+                                  ScrollViewer.CanContentScroll="True"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  RowDetailsVisibilityMode="Visible"
+                                  CanUserSortColumns="False"
+                                  AutomationProperties.Name="Plan design comparison">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="MinHeight" Value="42" />
+                                    <Setter Property="Background" Value="White" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsGroupHeader}" Value="True">
+                                            <Setter Property="Background" Value="#F8FAFC" />
+                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.RowDetailsTemplate>
+                                <DataTemplate>
+                                    <Border Background="#FAFAFF" BorderBrush="#DDD6FE" BorderThickness="0,0,0,1" Padding="16,10">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Provision.IsDetailsExpanded}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="170" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Margin="0,0,12,0">
+                                                <TextBlock Text="Comparison rationale" Style="{StaticResource DsSmallText}" />
+                                                <TextBlock Text="{Binding Provision.DifferenceRationale}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                                                <TextBlock Text="Source wording" Style="{StaticResource DsSmallText}" />
+                                                <TextBlock Text="{Binding Provision.SourceWording}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2">
+                                                <TextBlock Text="Validation / evidence" Style="{StaticResource DsSmallText}" />
+                                                <TextBlock Text="{Binding Provision.ValidationWarningText}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                                                <TextBlock Text="{Binding Provision.EvidenceText}" Style="{StaticResource DsSmallText}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGrid.RowDetailsTemplate>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Benefit / Provision" Width="2*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="8,6">
+                                                <StackPanel x:Name="GroupHeader" Visibility="Collapsed">
+                                                    <Button Content="Expand / collapse" Style="{StaticResource DsSecondaryButton}" HorizontalAlignment="Left" Padding="6,3" Click="PlanComparisonGroupToggle_Click" />
+                                                    <TextBlock Text="{Binding GroupName}" Foreground="{StaticResource PlanDeepPurpleBrush}" Margin="0,5,0,0" />
+                                                    <TextBlock Text="{Binding GroupChangedText}" Style="{StaticResource DsSmallText}" />
+                                                    <TextBlock Text="{Binding GroupCostText}" Style="{StaticResource DsSmallText}" />
+                                                </StackPanel>
+                                                <StackPanel x:Name="ProvisionContent" Visibility="Collapsed">
+                                                    <TextBlock Text="{Binding Provision.BenefitName}" Style="{StaticResource DsSmallText}" />
+                                                    <TextBlock Text="{Binding Provision.ProvisionName}" Style="{StaticResource PlanComparisonBenefitTextBlock}" ToolTip="{Binding Provision.ProvisionName}" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsGroupHeader}" Value="True">
+                                                    <Setter TargetName="GroupHeader" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsProvision}" Value="True">
+                                                    <Setter TargetName="ProvisionContent" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Current Plan" Binding="{Binding Provision.CurrentValue}" Width="1.45*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Selected Plan / Scenario" Binding="{Binding Provision.SelectedValue}" Width="1.45*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTemplateColumn Header="Difference" Width="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding Provision.StatusBackgroundBrush}" CornerRadius="6" Padding="7,3" Margin="6" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Provision.DifferenceStatus}" Foreground="{Binding Provision.StatusForegroundBrush}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Cost Impact" Binding="{Binding Provision.CostImpactText}" Width="110" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Value / Recommendation" Binding="{Binding Provision.ValueRecommendation}" Width="130" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTemplateColumn Header="Evidence" Width="150">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="6">
+                                                <TextBlock Text="{Binding Provision.EvidenceText}" Style="{StaticResource DsSmallText}" TextWrapping="Wrap" ToolTip="{Binding Provision.EvidenceText}" />
+                                                <WrapPanel Margin="0,5,0,0">
+                                                    <Button Content="Details" Style="{StaticResource DsSecondaryButton}" Padding="6,3" Margin="0,0,5,0" Click="PlanComparisonDetails_Click" />
+                                                    <Button Content="View source" Style="{StaticResource DsSecondaryButton}" Padding="6,3" Click="ViewSourceDocument_Click" IsEnabled="{Binding Provision.HasEvidence}" />
+                                                </WrapPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+
+                <Border Margin="0,18,0,0"
+                        Style="{StaticResource DsEmptyStateCard}"
+                        Visibility="{Binding PlanComparison.NoScenarioVisibility}">
+                    <StackPanel>
+                        <TextBlock Text="No comparison scenario selected" Style="{StaticResource DsSectionTitle}" />
+                        <TextBlock Text="{Binding PlanComparison.NoScenarioMessage}" Style="{StaticResource DsBodyText}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                    </StackPanel>
+                </Border>
+                </StackPanel>
+
+            </TabItem>
+
+            <TabItem Header="Benefit Summary">
+                <StackPanel Margin="0,18,0,0">
+                    <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{Binding SelectedBenefitSummary.ClientName}"
+                                           FontSize="24"
+                                           FontWeight="SemiBold"
+                                           Foreground="#004C55"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding SelectedBenefitSummary.SummaryTitle}"
+                                           FontSize="15"
+                                           Foreground="#279F98"
+                                           Margin="0,6,0,0"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding SelectedBenefitSummary.EffectiveDateText}"
+                                           Style="{StaticResource DsSmallText}"
+                                           Margin="0,6,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1"
+                                        Margin="20,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Visibility="{Binding BenefitSummarySelectorVisibility}">
+                                <TextBlock Text="Class and Flex Option"
+                                           Style="{StaticResource DsSmallText}"
+                                           Margin="0,0,0,5" />
+                                <ComboBox ItemsSource="{Binding BenefitSummaries}"
+                                          SelectedItem="{Binding SelectedBenefitSummary, Mode=TwoWay}"
+                                          DisplayMemberPath="SelectionLabel"
+                                          MinWidth="230"
+                                          Height="36"
+                                          ToolTip="Choose a class and flex option" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource PlanModernCard}"
+                            Visibility="{Binding BenefitSummaryEmptyVisibility}">
+                        <TextBlock Text="No client-facing Benefit Summary is available for the selected client."
+                                   Style="{StaticResource DsSmallText}"
+                                   TextWrapping="Wrap" />
+                    </Border>
+
+                    <StackPanel Visibility="{Binding BenefitSummaryContentVisibility}">
+                        <Border Background="White"
+                                BorderBrush="#D6E1E3"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="0">
+                            <ItemsControl ItemsSource="{Binding SelectedBenefitSummary.Sections}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#C7DAD8"
+                                                BorderThickness="0,0,0,1"
+                                                Padding="20,14">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="220" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding SectionTitle}"
+                                                           Foreground="#004C55"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="13"
+                                                           TextWrapping="Wrap"
+                                                           VerticalAlignment="Top"
+                                                           Margin="0,0,22,0" />
+                                                <ItemsControl Grid.Column="1" ItemsSource="{Binding Lines}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Margin="0,0,0,5">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="16" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Text="{Binding BulletMarker, Mode=OneWay}"
+                                                                           Foreground="#004C55"
+                                                                           VerticalAlignment="Top" />
+                                                                <TextBlock Grid.Column="1"
+                                                                           Foreground="#4B5563"
+                                                                           FontSize="12.5"
+                                                                           TextWrapping="Wrap"
+                                                                           LineHeight="19">
+                                                                    <Run Text="{Binding Label, Mode=OneWay}" FontWeight="SemiBold" />
+                                                                    <Run Text="{Binding LabelSeparator, Mode=OneWay}" />
+                                                                    <Run Text="{Binding DisplayValue, Mode=OneWay}" />
+                                                                </TextBlock>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+
+                        <StackPanel Margin="0,14,0,0">
+                            <TextBlock Text="{Binding SelectedBenefitSummary.UpdatedDateText}"
+                                       Foreground="#004C55"
+                                       FontSize="11"
+                                       FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SelectedBenefitSummary.DisclaimerText}"
+                                       Foreground="#64748B"
+                                       FontSize="10"
+                                       FontStyle="Italic"
+                                       TextWrapping="Wrap"
+                                       Margin="0,4,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Benefit Administration">
+                <StackPanel Margin="0,18,0,0">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Benefit Administration" Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="Review who insures, administers, manages, or delivers each benefit."
+                                       Style="{StaticResource DsSmallText}"
+                                       Margin="0,6,0,0" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Content="Export Summary"
+                                Style="{StaticResource PlanOutlineButton}"
+                                ToolTip="Export the client-facing Benefit Administration summary"
+                                Visibility="{Binding BenefitAdministration.ContentVisibility}"
+                                Click="ExportBenefitAdministration_Click" />
+                    </Grid>
+
+                    <Border Style="{StaticResource PlanModernCard}"
+                            Visibility="{Binding BenefitAdministration.EmptyVisibility}">
+                        <StackPanel>
+                            <TextBlock Text="No benefit administration assignments are saved for this plan."
+                                       Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="Insurers, administrators, service providers, products, and policy numbers will appear here when found in a supported source document."
+                                       Style="{StaticResource DsSmallText}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Visibility="{Binding BenefitAdministration.ContentVisibility}">
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12" Padding="16,12">
+                            <WrapPanel>
+                                <ComboBox x:Name="BenefitAdministrationInsurerFilter"
+                                          Width="190"
+                                          Height="36"
+                                          ItemsSource="{Binding BenefitAdministration.InsurerFilters}"
+                                          SelectedIndex="0"
+                                          Margin="0,0,10,0"
+                                          SelectionChanged="BenefitAdministrationFilter_Changed" />
+                                <ComboBox x:Name="BenefitAdministrationProviderFilter"
+                                          Width="190"
+                                          Height="36"
+                                          ItemsSource="{Binding BenefitAdministration.ProviderFilters}"
+                                          SelectedIndex="0"
+                                          Margin="0,0,10,0"
+                                          SelectionChanged="BenefitAdministrationFilter_Changed" />
+                                <ComboBox x:Name="BenefitAdministrationStatusFilter"
+                                          Width="165"
+                                          Height="36"
+                                          ItemsSource="{Binding BenefitAdministration.StatusFilters}"
+                                          SelectedIndex="0"
+                                          Margin="0,0,10,0"
+                                          SelectionChanged="BenefitAdministrationFilter_Changed" />
+                                <ComboBox x:Name="BenefitAdministrationOptionalFilter"
+                                          Width="150"
+                                          Height="36"
+                                          ItemsSource="{Binding BenefitAdministration.OptionalFilters}"
+                                          SelectedIndex="0"
+                                          SelectionChanged="BenefitAdministrationFilter_Changed" />
+                            </WrapPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PlanModernCard}" Padding="0">
+                            <DataGrid x:Name="BenefitAdministrationDataGrid"
+                                      ItemsSource="{Binding BenefitAdministration.Rows}"
+                                      Style="{StaticResource PlanTable}"
+                                      MinRowHeight="64"
+                                      MinHeight="420"
+                                      CanUserSortColumns="True"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Benefit" Width="190" SortMemberPath="Benefit">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Margin="7,5">
+                                                    <TextBlock Text="{Binding Benefit}" Style="{StaticResource PlanTableTextBlock}" FontWeight="SemiBold" />
+                                                    <Border Background="#E0F2FE" CornerRadius="5" Padding="6,2" Margin="0,5,0,0"
+                                                            HorizontalAlignment="Left" Visibility="{Binding OptionalVisibility}">
+                                                        <TextBlock Text="Optional" Foreground="#075985" FontSize="10" FontWeight="SemiBold" />
+                                                    </Border>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Product" Binding="{Binding Product}" Width="120" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTextColumn Header="Insurance Company" Binding="{Binding InsuranceCompany}" Width="175" ElementStyle="{StaticResource PlanTableTextBlock}" SortMemberPath="InsuranceCompany" />
+                                    <DataGridTextColumn Header="Service Provider" Binding="{Binding ServiceProvider}" Width="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTextColumn Header="Provider Role" Binding="{Binding ProviderRole}" Width="155" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTextColumn Header="Policy Number" Binding="{Binding PolicyNumber}" Width="105" ElementStyle="{StaticResource PlanTableTextBlock}" SortMemberPath="PolicyNumber" />
+                                    <DataGridTextColumn Header="Effective Date" Binding="{Binding EffectiveDate}" Width="110" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTemplateColumn Header="Status" Width="115" SortMemberPath="Status">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="5" Padding="7,3" HorizontalAlignment="Left">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="#FEF3C7" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="CONFIRMED">
+                                                                    <Setter Property="Background" Value="#DCFCE7" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="REJECTED">
+                                                                    <Setter Property="Background" Value="#FEE2E2" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Source" Width="95">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="View"
+                                                        Style="{StaticResource PlanGhostButton}"
+                                                        ToolTip="Open the source document"
+                                                        Click="ViewBenefitAdministrationSource_Click" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Actions" Width="270">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <WrapPanel Margin="4,3">
+                                                    <Button Content="Edit"
+                                                            Style="{StaticResource PlanGhostButton}"
+                                                            Margin="0,0,5,5"
+                                                            Click="EditBenefitAdministration_Click" />
+                                                    <Button Content="Add Provider"
+                                                            Style="{StaticResource PlanGhostButton}"
+                                                            Margin="0,0,5,5"
+                                                            Click="AddBenefitProvider_Click" />
+                                                    <Button Content="Manage"
+                                                            Style="{StaticResource PlanGhostButton}"
+                                                            Margin="0,0,5,5"
+                                                            Click="ManageBenefitProviders_Click" />
+                                                    <Button Content="Confirm"
+                                                            Style="{StaticResource PlanPurpleButton}"
+                                                            Margin="0,0,0,5"
+                                                            IsEnabled="{Binding NeedsReview}"
+                                                            Click="ConfirmBenefitAdministration_Click" />
+                                                </WrapPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Flexible Benefits">
+                <StackPanel Margin="0,18,0,0">
+                    <Border Style="{StaticResource PlanModernCard}"
+                            Visibility="{Binding FlexibleBenefits.EmptyVisibility}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="No HCSA or LSA plan has been imported for this client."
+                                           Style="{StaticResource DsSectionTitle}" />
+                                <TextBlock Text="Select an enrollment form, indemnity agreement, fee schedule, or amendment to extract a traceable flexible-benefits plan."
+                                           Style="{StaticResource DsSmallText}"
+                                           TextWrapping="Wrap"
+                                           Margin="0,8,20,0" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Content="Import HCSA / LSA Document"
+                                    Style="{StaticResource PlanPurpleButton}"
+                                    VerticalAlignment="Center"
+                                    Click="ImportFlexibleBenefits_Click" />
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Visibility="{Binding FlexibleBenefits.ContentVisibility}">
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Flexible Benefits Plan Design"
+                                                   Style="{StaticResource DsSectionTitle}"
+                                                   VerticalAlignment="Center" />
+                                        <Border Background="#E8F5EE"
+                                                BorderBrush="#B7DEC7"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                Padding="9,4"
+                                                Margin="12,0,0,0">
+                                            <TextBlock Text="{Binding FlexibleBenefits.ReviewStatus}"
+                                                       Foreground="#1F6F43"
+                                                       FontWeight="SemiBold" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="Normalized plan values with field-level links back to the signed source PDF."
+                                               Style="{StaticResource DsSmallText}"
+                                               Margin="0,7,0,0" />
+                                </StackPanel>
+                                <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Button Content="Import New Document"
+                                            Style="{StaticResource PlanGhostButton}"
+                                            Margin="0,0,8,8"
+                                            Click="ImportFlexibleBenefits_Click" />
+                                    <Button Content="View Original"
+                                            Style="{StaticResource PlanGhostButton}"
+                                            Margin="0,0,8,8"
+                                            Click="ViewFlexibleBenefitDocument_Click" />
+                                    <Button Content="View Source Page"
+                                            Style="{StaticResource PlanGhostButton}"
+                                            Margin="0,0,8,8"
+                                            Click="ViewFlexibleBenefitSourcePage_Click" />
+                                    <Button Content="Edit / Confirm"
+                                            Style="{StaticResource PlanGhostButton}"
+                                            Margin="0,0,8,8"
+                                            Click="EditFlexibleBenefitSourceField_Click" />
+                                    <Button Content="Compare Prior"
+                                            Style="{StaticResource PlanGhostButton}"
+                                            Margin="0,0,8,8"
+                                            IsEnabled="{Binding FlexibleBenefits.CanComparePriorVersion}"
+                                            Click="CompareFlexibleBenefitVersions_Click" />
+                                    <Button Content="Mark Reviewed"
+                                            Style="{StaticResource PlanPurpleButton}"
+                                            Margin="0,0,0,8"
+                                            Click="MarkFlexibleBenefitsReviewed_Click" />
+                                </WrapPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource PlanModernCard}"
+                                Margin="0,0,0,14"
+                                Background="#FFFBEB"
+                                BorderBrush="#FED7AA"
+                                Visibility="{Binding FlexibleBenefits.ReviewItemsVisibility}">
+                            <StackPanel>
+                                <TextBlock Text="Review Items"
+                                           Style="{StaticResource DsCardTitle}"
+                                           Foreground="#9A3412"
+                                           Margin="0,0,0,10" />
+                                <ItemsControl ItemsSource="{Binding FlexibleBenefits.ReviewItems}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="190" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Plan Summary" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,16" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Margin="0,0,18,16">
+                                        <TextBlock Text="Administrator" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.Administrator}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="0,0,18,16">
+                                        <TextBlock Text="Plan Type" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.PlanType}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Margin="0,0,18,16">
+                                        <TextBlock Text="Effective Date" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.EffectiveDate}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3" Margin="0,0,0,16">
+                                        <TextBlock Text="Version" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.VersionNumber, StringFormat=Version {0}}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Margin="0,0,18,16">
+                                        <TextBlock Text="HCSA" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.HcsaSummary}" Foreground="#0F766E" FontSize="18" FontWeight="Bold" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,18,16">
+                                        <TextBlock Text="LSA" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.LsaSummary}" Foreground="#1D4ED8" FontSize="18" FontWeight="Bold" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,18,16">
+                                        <TextBlock Text="Default Allocation" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.DefaultAllocation}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="3" Margin="0,0,0,16">
+                                        <TextBlock Text="Benefit Year" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.BenefitYear}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="2" Margin="0,0,18,0">
+                                        <TextBlock Text="Runoff" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.Runoff}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,18,0">
+                                        <TextBlock Text="Carry Forward" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.CarryForward}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,18,0">
+                                        <TextBlock Text="Dependent Ages" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.DependentAges}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="3">
+                                        <TextBlock Text="Funding" Style="{StaticResource DsSmallText}" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.FundingSummary}" Style="{StaticResource DsCardTitle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Class Limits" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,12" />
+                                <DataGrid ItemsSource="{Binding FlexibleBenefits.Classes}"
+                                          Style="{StaticResource PlanTable}"
+                                          MinHeight="120"
+                                          MaxHeight="300">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="2*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Single" Binding="{Binding SingleAmount}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Couple" Binding="{Binding CoupleAmount}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Family" Binding="{Binding FamilyAmount}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Waiting Period" Binding="{Binding WaitingPeriod}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="New-hire Proration" Binding="{Binding Proration}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Source" Binding="{Binding SourcePage}" Width="90" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Eligible LSA Categories" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,12" />
+                                <DataGrid ItemsSource="{Binding FlexibleBenefits.Categories}"
+                                          Style="{StaticResource PlanTable}"
+                                          MinHeight="300"
+                                          MaxHeight="520"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Group" Binding="{Binding CategoryGroup}" Width="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Enabled" Binding="{Binding Enabled}" Width="100" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Source" Binding="{Binding SourcePage}" Width="90" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,7,0">
+                                <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <TextBlock Text="Funding" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,10" />
+                                        <ItemsControl ItemsSource="{Binding FlexibleBenefits.Funding}" ItemTemplate="{StaticResource DetailTemplate}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource PlanModernCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="Fees" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,10" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.FeeSummary}" Style="{StaticResource DsSmallText}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                        <ItemsControl ItemsSource="{Binding FlexibleBenefits.Fees}" ItemTemplate="{StaticResource DetailTemplate}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="7,0,0,0">
+                                <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <TextBlock Text="Agreement" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,10" />
+                                        <TextBlock Text="{Binding FlexibleBenefits.AgreementSummary}" Style="{StaticResource DsSmallText}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                        <ItemsControl ItemsSource="{Binding FlexibleBenefits.Agreements}" ItemTemplate="{StaticResource DetailTemplate}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource PlanModernCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="Plan Contacts" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,10" />
+                                        <ItemsControl ItemsSource="{Binding FlexibleBenefits.Contacts}" ItemTemplate="{StaticResource DetailTemplate}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Extraction Details" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,6" />
+                                <TextBlock Text="Select a field to open its source page or save a reviewed correction. The raw PDF value remains unchanged."
+                                           Style="{StaticResource DsSmallText}"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,12" />
+                                <DataGrid x:Name="FlexibleSourceFieldsGrid"
+                                          ItemsSource="{Binding FlexibleBenefits.SourceFields}"
+                                          Style="{StaticResource PlanTable}"
+                                          MinHeight="320"
+                                          MaxHeight="560"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Entity" Binding="{Binding EntityType}" Width="130" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Field" Binding="{Binding FieldName}" Width="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Source Value" Binding="{Binding RawValue}" Width="280" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Normalized Value" Binding="{Binding NormalizedValue}" Width="220" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Page" Binding="{Binding SourcePage}" Width="80" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Confidence" Binding="{Binding Confidence}" Width="95" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Review" Binding="{Binding ReviewStatus}" Width="110" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource PlanModernCard}">
+                            <StackPanel>
+                                <TextBlock Text="Plan Versions" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,12" />
+                                <DataGrid x:Name="FlexibleVersionsGrid"
+                                          ItemsSource="{Binding FlexibleBenefits.Versions}"
+                                          Style="{StaticResource PlanTable}"
+                                          MinHeight="120"
+                                          MaxHeight="260">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Version" Binding="{Binding VersionNumber}" Width="90" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Effective Date" Binding="{Binding EffectiveDate}" Width="150" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="130" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Source File" Binding="{Binding SourceFile}" Width="*" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridCheckBoxColumn Header="Current" Binding="{Binding IsCurrent}" Width="90" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Legacy Class Comparison" Visibility="Collapsed">
+                <Grid Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="360" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource PlanModernCard}" Margin="0,0,16,0">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,14">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                    <Button Content="View by Benefit Area" Style="{StaticResource PlanPurpleButton}" Margin="0,0,8,0" />
+                                    <Button Content="View by Pricing Impact" Style="{StaticResource PlanOutlineButton}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="Difference Key:" Style="{StaticResource DsSmallText}" Margin="0,0,10,0" />
+                                    <Ellipse Width="8" Height="8" Fill="{StaticResource DsSuccessBrush}" Margin="0,0,5,0" />
+                                    <TextBlock Text="Same" Style="{StaticResource DsSmallText}" Margin="0,0,12,0" />
+                                    <Ellipse Width="8" Height="8" Fill="{StaticResource DsWarningBrush}" Margin="0,0,5,0" />
+                                    <TextBlock Text="Minor" Style="{StaticResource DsSmallText}" Margin="0,0,12,0" />
+                                    <Ellipse Width="8" Height="8" Fill="{StaticResource DsDangerBrush}" Margin="0,0,5,0" />
+                                    <TextBlock Text="Material" Style="{StaticResource DsSmallText}" />
+                                </StackPanel>
+                            </DockPanel>
+                            <DataGrid ItemsSource="{Binding ClassComparisonRows}"
+                                      Style="{StaticResource PlanTable}"
+                                      MinRowHeight="72"
+                                      MinHeight="500"
+                                      EnableRowVirtualization="False"
+                                      EnableColumnVirtualization="True"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Benefit Area" Width="170">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding BenefitArea}" Style="{StaticResource PlanComparisonBenefitTextBlock}" Margin="8,0" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn x:Name="ComparisonClass1Column" Header="Class 1" Width="210">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#F8FAFC" CornerRadius="7" Padding="8,5" Margin="5,6">
+                                                    <TextBlock Text="{Binding Class1Value}" Style="{StaticResource PlanComparisonCellTextBlock}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn x:Name="ComparisonClass2Column" Header="Class 2" Width="210">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#F8FAFC" CornerRadius="7" Padding="8,5" Margin="5,6">
+                                                    <TextBlock Text="{Binding Class2Value}" Style="{StaticResource PlanComparisonCellTextBlock}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn x:Name="ComparisonClass3Column" Header="Class 3" Width="210">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#F8FAFC" CornerRadius="7" Padding="8,5" Margin="5,6">
+                                                    <TextBlock Text="{Binding Class3Value}" Style="{StaticResource PlanComparisonCellTextBlock}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Difference" Width="130">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#F8FAFC" CornerRadius="12" Padding="8,4" Margin="8,8" HorizontalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse Width="8" Height="8" Fill="{Binding DifferenceBrush}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                                        <TextBlock Text="{Binding Difference}" Style="{StaticResource DsSmallText}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Pricing Impact" Width="150">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding PricingImpact}" Style="{StaticResource PlanComparisonCellTextBlock}" Margin="8,0" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <TextBlock Text="Note: Pricing impact is an estimate based on plan design differences and historical claim experience."
+                                       Style="{StaticResource DsSmallText}"
+                                       Margin="0,12,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Grid.Column="1">
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Estimated Pricing Impact" Style="{StaticResource DsCardTitle}" />
+                                <Border BorderBrush="{StaticResource DsBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,14,0,14">
+                                    <DockPanel>
+                                        <TextBlock Text="Overall Impact" Style="{StaticResource DsSmallText}" DockPanel.Dock="Left" />
+                                        <Border Background="#FEF2F2" CornerRadius="8" Padding="8,3" HorizontalAlignment="Right">
+                                            <TextBlock Text="Higher for Class 1" Foreground="{StaticResource DsDangerBrush}" FontWeight="SemiBold" FontSize="12" />
+                                        </Border>
+                                    </DockPanel>
+                                </Border>
+                                <DockPanel Margin="0,0,0,12">
+                                    <TextBlock Text="Relative Impact" Style="{StaticResource DsSmallText}" DockPanel.Dock="Left" />
+                                    <TextBlock Text="+ 6.2%" Foreground="{StaticResource DsDangerBrush}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" />
+                                </DockPanel>
+                                <TextBlock Text="Drivers" Style="{StaticResource DsSmallText}" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <ItemsControl ItemsSource="{Binding PricingDrivers}" ItemTemplate="{StaticResource FlagTemplate}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Underwriting Considerations" Style="{StaticResource DsCardTitle}" Margin="0,0,0,12" />
+                                <ItemsControl ItemsSource="{Binding UnderwritingConsiderations}" ItemTemplate="{StaticResource FlagTemplate}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Consultant Talking Points" Style="{StaticResource DsCardTitle}" Margin="0,0,0,12" />
+                                <ItemsControl ItemsSource="{Binding ConsultantTalkingPoints}" ItemTemplate="{StaticResource FlagTemplate}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanModernCard}">
+                            <StackPanel>
+                                <TextBlock Text="Quick Actions" Style="{StaticResource DsCardTitle}" Margin="0,0,0,12" />
+                                <UniformGrid Columns="2" Rows="2">
+                                    <Button Content="Export to Proposal" Style="{StaticResource PlanOutlineButton}" Margin="0,0,8,8" />
+                                    <Button Content="Compare with Renewal" Style="{StaticResource PlanOutlineButton}" Margin="0,0,0,8" />
+                                    <Button Content="Benchmark Against Market" Style="{StaticResource PlanOutlineButton}" Margin="0,0,8,0" />
+                                    <Button Content="Add to Report Pack" Style="{StaticResource PlanOutlineButton}" />
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Rate Comparison">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Rate Comparison" Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="Saved class-level rates only. Tier rates such as Single and Family are not assigned to employee classes."
+                                       Style="{StaticResource DsBodyText}"
+                                       Margin="0,6,0,0" />
+                        </StackPanel>
+                        <Border Grid.Row="1"
+                                Visibility="{Binding ClassComparison.RateEmptyVisibility}"
+                                Background="#F8FAFC"
+                                BorderBrush="#E2E8F0"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="No class-level rates are available" Style="{StaticResource DsCardTitle}" />
+                                <TextBlock Text="The comparison remains blank until a saved rate row matches an employee class name or code."
+                                           Style="{StaticResource DsBodyText}"
+                                           Margin="0,7,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding ClassComparison.RateRows}"
+                                  Visibility="{Binding ClassComparison.RateDataVisibility}"
+                                  Style="{StaticResource PlanTable}"
+                                  AutoGenerateColumns="False"
+                                  MinHeight="420"
+                                  IsReadOnly="True"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Benefit" Binding="{Binding Benefit}" Width="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Class" Binding="{Binding ClassDisplayName}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Current Rate" Binding="{Binding CurrentRateText}" Width="125" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Class Rate" Binding="{Binding ProposedRateText}" Width="125" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Negotiated" Binding="{Binding NegotiatedRateText}" Width="125" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Variance" Binding="{Binding VarianceText}" Width="110" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Variance %" Binding="{Binding VariancePercentText}" Width="110" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Basis" Binding="{Binding RateBasis}" Width="120" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Effective" Binding="{Binding EffectiveDateText}" Width="120" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Source" Binding="{Binding SourceDocument}" Width="220" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Cost Analysis">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Class Cost Summary" Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="Employer, employee, and total costs are shown only when saved billing or premium records identify the employee class."
+                                       Style="{StaticResource DsBodyText}"
+                                       Margin="0,6,0,0" />
+                        </StackPanel>
+                        <Border Grid.Row="1"
+                                Visibility="{Binding ClassComparison.CostEmptyVisibility}"
+                                Background="#F8FAFC"
+                                BorderBrush="#E2E8F0"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="No class-level cost data is available" Style="{StaticResource DsCardTitle}" />
+                                <TextBlock Text="Costs are not estimated from booklet coverage. Load class-mapped billing, premium, or census data to populate this analysis."
+                                           Style="{StaticResource DsBodyText}"
+                                           Margin="0,7,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding ClassComparison.CostSummaries}"
+                                  Visibility="{Binding ClassComparison.CostDataVisibility}"
+                                  Style="{StaticResource PlanTable}"
+                                  AutoGenerateColumns="False"
+                                  MinHeight="420"
+                                  IsReadOnly="True"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Class" Binding="{Binding DisplayName}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Employees" Binding="{Binding EmployeeCountText}" Width="100" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Monthly Premium" Binding="{Binding MonthlyTotalCostText}" Width="140" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Annual Employer" Binding="{Binding AnnualEmployerCostText}" Width="145" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Annual Employee" Binding="{Binding AnnualEmployeeCostText}" Width="145" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Annual Total" Binding="{Binding AnnualTotalCostText}" Width="140" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Cost / Employee" Binding="{Binding CostPerEmployeeText}" Width="135" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="% of Client Cost" Binding="{Binding TotalClientCostPercentText}" Width="135" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Projected Change" Binding="{Binding ProjectedChangeText}" Width="130" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn Header="Source" Binding="{Binding SourceDocument}" Width="220" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Value Score">
+                <Grid Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.1*" />
+                        <ColumnDefinition Width="0.9*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource PlanModernCard}" Margin="0,0,16,0">
+                        <StackPanel>
+                            <TextBlock Text="Overall Value Score" Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="Scores are normalized across selected classes. Categories without reliable data are excluded and the remaining weights are rebalanced."
+                                       Style="{StaticResource DsBodyText}"
+                                       Margin="0,6,0,16" />
+                            <ItemsControl ItemsSource="{Binding ClassComparison.ValueScores}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:ClassValueScoreRow}">
+                                        <Border BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="180" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="80" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource DsCardTitle}" FontSize="14" TextWrapping="Wrap" />
+                                                    <TextBlock Text="{Binding RankText}" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                                                </StackPanel>
+                                                <ProgressBar Grid.Column="1"
+                                                             Value="{Binding Score}"
+                                                             Maximum="100"
+                                                             Height="12"
+                                                             Foreground="{Binding BarBrush}"
+                                                             Background="#E2E8F0"
+                                                             VerticalAlignment="Center"
+                                                             Margin="12,0" />
+                                                <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                                    <TextBlock Text="{Binding ScoreText}" FontWeight="Bold" Foreground="{StaticResource PlanTextPrimaryBrush}" />
+                                                    <TextBlock Text="{Binding RecommendationText}" Foreground="#15803D" FontSize="10" FontWeight="SemiBold" Margin="0,4,0,0" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource PlanModernCard}">
+                        <StackPanel>
+                            <TextBlock Text="Scoring Method" Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="The result uses transparent, reusable criteria; it does not contain client-specific scores."
+                                       Style="{StaticResource DsBodyText}"
+                                       Margin="0,6,0,14" />
+                            <ItemsControl ItemsSource="{Binding ClassComparison.ValueScores[0].Components}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:ClassValueScoreComponent}">
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="72" />
+                                                <ColumnDefinition Width="92" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Category}" FontWeight="SemiBold" Foreground="{StaticResource PlanTextPrimaryBrush}" />
+                                                <TextBlock Text="{Binding Explanation}" Style="{StaticResource DsSmallText}" TextWrapping="Wrap" Margin="0,3,8,0" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding WeightText}" Style="{StaticResource DsSmallText}" TextAlignment="Right" />
+                                            <TextBlock Grid.Column="2" Text="{Binding ScoreText}" FontWeight="SemiBold" TextAlignment="Right" Foreground="{StaticResource PlanTextPrimaryBrush}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Summary">
+                <StackPanel Margin="0,18,0,0">
+                    <UniformGrid Columns="6" Margin="0,0,0,14" Visibility="{Binding PlanDesignContentVisibility}">
+                        <Border Style="{StaticResource PlanKpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="Total Benefit Areas" Style="{StaticResource DsSmallText}" />
+                                <TextBlock Text="{Binding TotalBenefitAreaCount}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PlanTextPrimaryBrush}" Margin="0,7,0,0" />
+                                <TextBlock Text="Active categories" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanKpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="Different from Current" Style="{StaticResource DsSmallText}" />
+                                <TextBlock Text="{Binding DifferentBenefitAreaCount}" FontSize="24" FontWeight="Bold" Foreground="#F97316" Margin="0,7,0,0" />
+                                <TextBlock Text="Require attention" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanKpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="Same as Current" Style="{StaticResource DsSmallText}" />
+                                <TextBlock Text="{Binding SameBenefitAreaCount}" FontSize="24" FontWeight="Bold" Foreground="#059669" Margin="0,7,0,0" />
+                                <TextBlock Text="No changes" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanKpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="Plan Richness Score" Style="{StaticResource DsSmallText}" />
+                                <TextBlock Text="{Binding PlanRichnessScoreText}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource PlanPurpleBrush}" Margin="0,7,0,0" />
+                                <TextBlock Text="Calculated preview" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanKpiCard}">
+                            <StackPanel>
+                                <TextBlock Text="Compliance Score" Style="{StaticResource DsSmallText}" />
+                                <TextBlock Text="{Binding ComplianceScoreText}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource PlanPurpleBrush}" Margin="0,7,0,0" />
+                                <TextBlock Text="Preview status" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanKpiCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Estimated Impact" Style="{StaticResource DsSmallText}" />
+                                <TextBlock Text="{Binding EstimatedImpactText}" FontSize="22" FontWeight="Bold" Foreground="#E11D48" Margin="0,7,0,0" />
+                                <TextBlock Text="Needs mapped rates" Style="{StaticResource DsSmallText}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                    <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.2*" />
+                        <ColumnDefinition Width="0.8*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource PlanModernCard}" Margin="0,0,16,0">
+                        <StackPanel>
+                            <TextBlock Text="Class Difference Summary" Style="{StaticResource DsSectionTitle}" />
+                            <TextBlock Text="Generated from the same normalized rules used by the comparison table."
+                                       Style="{StaticResource DsBodyText}"
+                                       Margin="0,6,0,16" />
+                            <ItemsControl ItemsSource="{Binding ClassComparison.DifferenceSummaries}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:ClassDifferenceSummaryRow}">
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Width="9" Height="9" Fill="{Binding IndicatorBrush}" Margin="0,5,10,0" VerticalAlignment="Top" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Summary}" Style="{StaticResource DsBodyText}" TextWrapping="Wrap" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Grid.Column="1">
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Plan Details" Style="{StaticResource DsCardTitle}" Margin="0,0,0,12" />
+                                <TextBlock Text="{Binding ClassComparison.EffectiveDateText, StringFormat=Effective date: {0}}" Style="{StaticResource DsBodyText}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding ClassComparison.TotalEligibleEmployeesText, StringFormat=Eligible employees: {0}}" Style="{StaticResource DsBodyText}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding ClassComparison.Consultant, StringFormat=Consultant: {0}}" Style="{StaticResource DsBodyText}" Margin="0,0,0,6" />
+                                <TextBlock Text="{Binding ClassComparison.PlanStatus, StringFormat=Plan status: {0}}" Style="{StaticResource DsBodyText}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanModernCard}"
+                                Background="#FFFBEB"
+                                BorderBrush="#FED7AA"
+                                Visibility="{Binding SourceVerificationWarningsVisibility}">
+                            <StackPanel>
+                                <TextBlock Text="Source Verification Warnings" Style="{StaticResource DsCardTitle}" Foreground="#9A3412" Margin="0,0,0,10" />
+                                <ItemsControl ItemsSource="{Binding SourceVerificationWarnings}" ItemTemplate="{StaticResource FlagTemplate}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Notes &amp; History">
+                <Grid Margin="0,18,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="220" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="Analyst Note" Style="{StaticResource DsCardTitle}" Margin="0,0,0,8" />
+                                <TextBox Text="{Binding ClassComparison.AnalystNote, UpdateSourceTrigger=PropertyChanged}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         MinHeight="72"
+                                         AutomationProperties.Name="Class comparison analyst note" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                                <TextBlock Text="Class" Style="{StaticResource DsSmallText}" Margin="0,0,0,8" />
+                                <ComboBox x:Name="ComparisonNoteClassComboBox"
+                                          ItemsSource="{Binding ClassComparison.SelectedClasses}"
+                                          DisplayMemberPath="DisplayName"
+                                          SelectedValuePath="ClassName"
+                                          SelectedIndex="0"
+                                          Height="36"
+                                          AutomationProperties.Name="Note class" />
+                            </StackPanel>
+                            <Button Grid.Column="2"
+                                    Content="Save Note"
+                                    Style="{StaticResource PlanPurpleButton}"
+                                    VerticalAlignment="Bottom"
+                                    Click="SaveComparisonNote_Click" />
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.75*" />
+                            <ColumnDefinition Width="1.25*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,14,0">
+                            <StackPanel>
+                                <TextBlock Text="Notes" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,12" />
+                                <TextBlock Text="No analyst notes have been saved for this client."
+                                           Style="{StaticResource DsBodyText}"
+                                           Visibility="{Binding ClassComparison.NotesEmptyVisibility}" />
+                                <ItemsControl ItemsSource="{Binding ClassComparison.Notes}" Visibility="{Binding ClassComparison.NotesVisibility}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type models:ClassComparisonNoteRow}">
+                                            <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="0,0,0,12" Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding NoteText}" Style="{StaticResource DsBodyText}" TextWrapping="Wrap" />
+                                                    <TextBlock Text="{Binding CreatedAtText}" Style="{StaticResource DsSmallText}" Margin="0,6,0,0" />
+                                                    <TextBlock Text="{Binding Author, StringFormat=By {0}}" Style="{StaticResource DsSmallText}" />
+                                                    <TextBlock Text="{Binding ClassName, StringFormat=Class: {0}}" Style="{StaticResource DsSmallText}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource PlanModernCard}">
+                            <StackPanel>
+                                <TextBlock Text="Audit History" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,12" />
+                                <TextBlock Text="No class comparison history has been recorded yet."
+                                           Style="{StaticResource DsBodyText}"
+                                           Visibility="{Binding ClassComparison.HistoryEmptyVisibility}" />
+                                <DataGrid ItemsSource="{Binding ClassComparison.History}"
+                                          Visibility="{Binding ClassComparison.HistoryVisibility}"
+                                          Style="{StaticResource PlanTable}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          MinHeight="360"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Date" Binding="{Binding DateText}" Width="140" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="120" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="135" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Field" Binding="{Binding FieldName}" Width="145" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Previous" Binding="{Binding PreviousValue}" Width="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="New" Binding="{Binding NewValue}" Width="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                        <DataGridTextColumn Header="Source" Binding="{Binding SourceDocument}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Benefit Details" Visibility="Collapsed" Tag="Advanced">
+                <Grid Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="360" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource PlanModernCard}" Margin="0,0,16,0">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,20">
+                                <TextBlock Text="&lt;  Back to all benefits" Style="{StaticResource DsSmallText}" DockPanel.Dock="Left" />
+                                <Button Content="Compare Classes" Style="{StaticResource PlanOutlineButton}" DockPanel.Dock="Right" />
+                            </DockPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="#ECFDF5" BorderBrush="#99F6E4" BorderThickness="1" CornerRadius="8" Padding="8" Margin="0,0,12,0">
+                                    <TextBlock Text="EHC" Foreground="{StaticResource DsAccentTealBrush}" FontWeight="Bold" />
+                                </Border>
+                                <TextBlock Text="Extended Healthcare (EHC)" Style="{StaticResource DsPageTitle}" FontSize="24" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                <Button Content="Coverage Overview" Style="{StaticResource PlanPurpleButton}" Margin="0,0,8,0" />
+                                <Button Content="Category Details" Style="{StaticResource PlanOutlineButton}" Margin="0,0,8,0" />
+                                <Button Content="Plan Provisions" Style="{StaticResource PlanOutlineButton}" Margin="0,0,8,0" />
+                                <Button Content="History &amp; Changes" Style="{StaticResource PlanOutlineButton}" />
+                            </StackPanel>
+                            <DataGrid ItemsSource="{Binding EhcCoverageRows}"
+                                      Style="{StaticResource PlanTable}"
+                                      RowHeight="54"
+                                      MinHeight="420">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Coverage Feature" Binding="{Binding CoverageFeature}" Width="260" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTextColumn x:Name="EhcClass1Column" Header="Class 1" Binding="{Binding Class1Value}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTextColumn x:Name="EhcClass2Column" Header="Class 2" Binding="{Binding Class2Value}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTextColumn x:Name="EhcClass3Column" Header="Class 3" Binding="{Binding Class3Value}" Width="190" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                    <DataGridTemplateColumn Header="Difference" Width="150">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="8,6">
+                                                    <Ellipse Width="10" Height="10" Fill="{Binding DifferenceBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                                    <TextBlock Text="{Binding Difference}" Style="{StaticResource DsSmallText}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,14,0,20">
+                                <TextBlock Text="Key Insight: Class 1 has a richer coinsurance level (100% vs 70%), which will drive higher claim costs compared to Class 2."
+                                           Style="{StaticResource DsSmallText}"
+                                           Foreground="{StaticResource DsPrimaryNavyBrush}" />
+                            </Border>
+                            <TextBlock Text="Additional Details" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,14" />
+                            <ItemsControl ItemsSource="{Binding EhcAdditionalDetails}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="5" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,0,20,0">
+                                            <TextBlock Text="{Binding Label}" Style="{StaticResource DsSmallText}" />
+                                            <TextBlock Text="{Binding Value}" Style="{StaticResource DsCardTitle}" Margin="0,6,0,0" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Expander Header="Plan Clause &amp; Definitions" Margin="0,22,0,0">
+                                <TextBlock Text="Source clauses are ready for document-linked extraction. Future versions can display the exact booklet/GIR wording and page reference here."
+                                           Style="{StaticResource DsBodyText}"
+                                           Margin="0,10,0,0" />
+                            </Expander>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Grid.Column="1">
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Key Highlights" Style="{StaticResource DsCardTitle}" Margin="0,0,0,14" />
+                                <ItemsControl ItemsSource="{Binding KeyHighlights}" ItemTemplate="{StaticResource FlagTemplate}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanModernCard}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Pricing Impact" Style="{StaticResource DsCardTitle}" />
+                                <TextBlock Text="Estimated cost impact of class difference" Style="{StaticResource DsSmallText}" Margin="0,6,0,16" />
+                                <TextBlock Text="+ $128,450" Foreground="#6D28D9" FontSize="24" FontWeight="Bold" />
+                                <DockPanel Margin="0,16,0,0">
+                                    <TextBlock Text="Impact % of Total EHC Premium" Style="{StaticResource DsSmallText}" DockPanel.Dock="Left" />
+                                    <TextBlock Text="+4.1%" Foreground="{StaticResource DsPrimaryNavyBrush}" FontSize="18" HorizontalAlignment="Right" />
+                                </DockPanel>
+                                <Border Background="#F3E8FF" CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,14,0,0">
+                                    <TextBlock Text="Higher for Class 1" Foreground="#6D28D9" FontWeight="SemiBold" FontSize="12" />
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource PlanModernCard}">
+                            <StackPanel>
+                                <TextBlock Text="Consultant Notes" Style="{StaticResource DsCardTitle}" Margin="0,0,0,12" />
+                                <TextBox AcceptsReturn="True"
+                                         MinHeight="112"
+                                         TextWrapping="Wrap"
+                                         Text="Add notes about this benefit..." />
+                                <DockPanel Margin="0,8,0,0">
+                                    <TextBlock Text="0 / 1000" Style="{StaticResource DsSmallText}" DockPanel.Dock="Left" />
+                                    <Button Content="Save Note" Style="{StaticResource PlanOutlineButton}" HorizontalAlignment="Right" DockPanel.Dock="Right" />
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Paramedical" Visibility="Collapsed" Tag="Advanced">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Paramedical" Style="{StaticResource DsSectionTitle}" />
+                        <TextBlock Text="Class-specific coverage loaded from the saved booklet, contract, or plan design source."
+                                   Style="{StaticResource DsBodyText}"
+                                   Margin="0,8,0,16" />
+                        <DataGrid ItemsSource="{Binding ParamedicalRows}"
+                                  Style="{StaticResource PlanTable}"
+                                  MinRowHeight="58"
+                                  MinHeight="240"
+                                  EnableRowVirtualization="False"
+                                  EnableColumnVirtualization="True"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Coverage Feature" Binding="{Binding CoverageFeature}" Width="190" ElementStyle="{StaticResource PlanComparisonBenefitTextBlock}" />
+                                <DataGridTextColumn x:Name="ParamedicalClass1Column" Header="Class 1" Binding="{Binding Class1Value}" Width="*" MinWidth="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn x:Name="ParamedicalClass2Column" Header="Class 2" Binding="{Binding Class2Value}" Width="*" MinWidth="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTextColumn x:Name="ParamedicalClass3Column" Header="Class 3" Binding="{Binding Class3Value}" Width="*" MinWidth="180" ElementStyle="{StaticResource PlanTableTextBlock}" />
+                                <DataGridTemplateColumn Header="Difference" Width="130">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="8,6">
+                                                <Ellipse Width="9" Height="9" Fill="{Binding DifferenceBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                                <TextBlock Text="{Binding Difference}" Style="{StaticResource DsSmallText}" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <ItemsControl ItemsSource="{Binding ParamedicalDetails}" Margin="0,18,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,14">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{Binding Label}" Style="{StaticResource DsCardTitle}" FontSize="14" />
+                                        <TextBlock Grid.Row="1"
+                                                   Text="{Binding Value}"
+                                                   Style="{StaticResource DsBodyText}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,7,0,0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Exclusions &amp; Limitations" Visibility="Collapsed" Tag="Advanced">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Exclusions &amp; Limitations" Style="{StaticResource DsSectionTitle}" />
+                        <TextBlock Text="No manual entries are required here. Future extraction will display source-linked clauses, exclusions, and limitations from benefit booklets, GIRs, and carrier proposals."
+                                   Style="{StaticResource DsBodyText}" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Notes &amp; Files" Visibility="Collapsed" Tag="Advanced">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Notes &amp; Files" Style="{StaticResource DsSectionTitle}" />
+                        <TextBlock Text="{Binding LastRefreshedText}" Style="{StaticResource DsBodyText}" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Readiness Checklist" Visibility="Collapsed" Tag="Advanced">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Readiness Checklist" Style="{StaticResource DsSectionTitle}" Margin="0,0,0,14" />
+                        <ItemsControl ItemsSource="{Binding ReadinessChecklist}" ItemTemplate="{StaticResource FlagTemplate}" />
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Raw Extraction" Visibility="Collapsed" Tag="Advanced">
+                <Border Style="{StaticResource PlanModernCard}" Margin="0,18,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <DockPanel Margin="0,0,0,16">
+                            <StackPanel DockPanel.Dock="Left">
+                                <TextBlock Text="Raw Plan Design Extraction" Style="{StaticResource DsSectionTitle}" />
+                                <TextBlock Text="Review the exact saved rows from SQLite before relying on the summary."
+                                           Style="{StaticResource DsBodyText}"
+                                           Margin="0,6,0,0" />
+                            </StackPanel>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <Button Content="Open Source Document"
+                                        Style="{StaticResource PlanOutlineButton}"
+                                        Margin="0,0,10,0"
+                                        Click="ViewSourceDocument_Click" />
+                                <Button Content="Export Raw Rows"
+                                        Style="{StaticResource PlanPurpleButton}"
+                                        Click="ExportRawRows_Click" />
+                            </StackPanel>
+                        </DockPanel>
+
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding RawExtractionRows}"
+                                  Style="{StaticResource PlanTable}"
+                                  AutoGenerateColumns="False"
+                                  MinHeight="560"
+                                  RowHeight="36"
+                                  CanUserSortColumns="True"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Benefit" Binding="{Binding Benefit}" Width="150" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="150" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Feature" Binding="{Binding FeatureName}" Width="190" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Value" Binding="{Binding FeatureValue}" Width="220" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Coinsurance" Binding="{Binding Coinsurance}" Width="110" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Deductible" Binding="{Binding Deductible}" Width="110" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Maximum" Binding="{Binding Maximum}" Width="120" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Frequency" Binding="{Binding Frequency}" Width="120" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Term Age" Binding="{Binding TerminationAge}" Width="100" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Class" Binding="{Binding ClassText}" Width="130" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Page" Binding="{Binding SourcePage}" Width="80" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Confidence" Binding="{Binding ConfidenceText}" Width="100" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Source Preview" Binding="{Binding SourceTextPreview}" Width="360" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                                <DataGridTextColumn Header="Loaded" Binding="{Binding LoadedText}" Width="160" ElementStyle="{StaticResource RawExtractionTableTextBlock}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
+
+        <Border Grid.Row="3"
+                Style="{StaticResource PlanModernCard}"
+                Margin="0,18,0,0"
+                Visibility="{Binding EmptyStateVisibility}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40">
+                <TextBlock Text="{Binding EmptyStateMessage}"
+                           Style="{StaticResource DsSectionTitle}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           MaxWidth="620" />
+                <TextBlock Text="Plan Design will load only from the selected client. No shared demo client data is shown here."
+                           Style="{StaticResource DsBodyText}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           MaxWidth="620"
+                           Margin="0,10,0,22" />
+                <WrapPanel HorizontalAlignment="Center">
+                    <Button Content="Import HCSA / LSA Document"
+                            Style="{StaticResource PlanPurpleButton}"
+                            Margin="0,0,10,10"
+                            Click="ImportFlexibleBenefits_Click" />
+                    <Button Content="Upload Booklet"
+                            Style="{StaticResource PlanPurpleButton}"
+                            Margin="0,0,10,10"
+                            Click="EmptyUploadBooklet_Click" />
+                    <Button Content="Extract Plan Design"
+                            Style="{StaticResource PlanOutlineButton}"
+                            Margin="0,0,10,10"
+                            Click="EmptyExtractPlanDesign_Click" />
+                    <Button Content="Link Source Document"
+                            Style="{StaticResource PlanOutlineButton}"
+                            Margin="0,0,0,10"
+                            Click="EmptyLinkSourceDocument_Click" />
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="PlanAskBenefitsCard" Grid.Row="3" Style="{StaticResource PlanModernCard}" Margin="0,16,0,0" Visibility="{Binding PlanDesignContentVisibility}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Width="42" Height="42" CornerRadius="21" Background="{StaticResource PlanPurpleGradientBrush}" Margin="0,0,14,0">
+                    <TextBlock Text="AI" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Grid.Column="1"
+                           Text="Ask Benefits OS"
+                           Style="{StaticResource DsCardTitle}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,16,0" />
+                <Border Grid.Column="2" Background="{StaticResource PlanSoftPurpleBrush}" BorderBrush="#DDD6FE" BorderThickness="1" CornerRadius="9" Padding="10,6" Margin="0,0,8,0">
+                    <TextBlock Text="What changes would improve competitiveness the most?" Foreground="{StaticResource PlanPurpleBrush}" FontSize="12" />
+                </Border>
+                <Border Grid.Column="3" Background="{StaticResource PlanSoftPurpleBrush}" BorderBrush="#DDD6FE" BorderThickness="1" CornerRadius="9" Padding="10,6" Margin="0,0,8,0">
+                    <TextBlock Text="How does this compare to industry leaders?" Foreground="{StaticResource PlanPurpleBrush}" FontSize="12" />
+                </Border>
+                <TextBox Grid.Column="4"
+                         Height="38"
+                         Text="Ask a question about your plan design..."
+                         Foreground="{StaticResource PlanTextSecondaryBrush}"
+                         Margin="0,0,10,0" />
+                <Button Grid.Column="5"
+                        Content=">"
+                        Width="44"
+                        Style="{StaticResource PlanPurpleButton}" />
+            </Grid>
+        </Border>
+
+        <Border x:Name="PlanNextActionsCard" Grid.Row="4" Style="{StaticResource PlanModernCard}" Margin="0,16,0,0" Visibility="{Binding PlanDesignContentVisibility}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="What would you like to do next?" Style="{StaticResource DsCardTitle}" FontSize="16" />
+                    <TextBlock Text="{Binding LastRefreshedText}" Style="{StaticResource DsSmallText}" Margin="0,6,0,0" />
+                </StackPanel>
+                <Button Grid.Column="1" Content="Use in Renewal Analysis" Style="{StaticResource PlanOutlineButton}" Margin="10,0,0,0" />
+                <Button Grid.Column="2" Content="Use in Proposal / Quote" Style="{StaticResource PlanOutlineButton}" Margin="10,0,0,0" />
+                <Button Grid.Column="3" Content="Benchmark this Plan" Style="{StaticResource PlanOutlineButton}" Margin="10,0,0,0" />
+                <Button Grid.Column="4" Content="More Actions" Style="{StaticResource PlanOutlineButton}" Margin="10,0,0,0" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,250 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="DsPrimaryNavyColor">#0B2341</Color>
+    <Color x:Key="DsSidebarNavyColor">#071D35</Color>
+    <Color x:Key="DsAccentTealColor">#0F8B8D</Color>
+    <Color x:Key="DsAccentTealDarkColor">#087477</Color>
+    <Color x:Key="DsSuccessColor">#16A34A</Color>
+    <Color x:Key="DsWarningColor">#F59E0B</Color>
+    <Color x:Key="DsDangerColor">#DC2626</Color>
+    <Color x:Key="DsInfoColor">#2563EB</Color>
+    <Color x:Key="DsPlanAccentColor">#6D28D9</Color>
+    <Color x:Key="DsPlanAccentSoftColor">#F5F3FF</Color>
+    <Color x:Key="DsBackgroundColor">#F7F9FC</Color>
+    <Color x:Key="DsCardBackgroundColor">#FFFFFF</Color>
+    <Color x:Key="DsBorderColor">#E2E8F0</Color>
+    <Color x:Key="DsTextPrimaryColor">#0F172A</Color>
+    <Color x:Key="DsTextSecondaryColor">#475569</Color>
+    <Color x:Key="DsTextMutedColor">#94A3B8</Color>
+
+    <SolidColorBrush x:Key="DsPrimaryNavyBrush" Color="{StaticResource DsPrimaryNavyColor}" />
+    <SolidColorBrush x:Key="DsSidebarNavyBrush" Color="{StaticResource DsSidebarNavyColor}" />
+    <SolidColorBrush x:Key="DsAccentTealBrush" Color="{StaticResource DsAccentTealColor}" />
+    <SolidColorBrush x:Key="DsAccentTealDarkBrush" Color="{StaticResource DsAccentTealDarkColor}" />
+    <SolidColorBrush x:Key="DsSuccessBrush" Color="{StaticResource DsSuccessColor}" />
+    <SolidColorBrush x:Key="DsWarningBrush" Color="{StaticResource DsWarningColor}" />
+    <SolidColorBrush x:Key="DsDangerBrush" Color="{StaticResource DsDangerColor}" />
+    <SolidColorBrush x:Key="DsInfoBrush" Color="{StaticResource DsInfoColor}" />
+    <SolidColorBrush x:Key="DsPlanAccentBrush" Color="{StaticResource DsPlanAccentColor}" />
+    <SolidColorBrush x:Key="DsPlanAccentSoftBrush" Color="{StaticResource DsPlanAccentSoftColor}" />
+    <SolidColorBrush x:Key="DsBackgroundBrush" Color="{StaticResource DsBackgroundColor}" />
+    <SolidColorBrush x:Key="DsCardBackgroundBrush" Color="{StaticResource DsCardBackgroundColor}" />
+    <SolidColorBrush x:Key="DsBorderBrush" Color="{StaticResource DsBorderColor}" />
+    <SolidColorBrush x:Key="DsTextPrimaryBrush" Color="{StaticResource DsTextPrimaryColor}" />
+    <SolidColorBrush x:Key="DsTextSecondaryBrush" Color="{StaticResource DsTextSecondaryColor}" />
+    <SolidColorBrush x:Key="DsTextMutedBrush" Color="{StaticResource DsTextMutedColor}" />
+
+    <Style x:Key="DsPageTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource DsTextPrimaryBrush}" />
+    </Style>
+
+    <Style x:Key="DsSectionTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource DsTextPrimaryBrush}" />
+    </Style>
+
+    <Style x:Key="DsCardTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource DsTextPrimaryBrush}" />
+    </Style>
+
+    <Style x:Key="DsBodyText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{StaticResource DsTextSecondaryBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="DsSmallText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{StaticResource DsTextSecondaryBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="DsCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource DsCardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource DsBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="18" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="16" ShadowDepth="1" Opacity="0.07" Color="#0F172A" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DsKpiCard" TargetType="Border" BasedOn="{StaticResource DsCard}">
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="MinHeight" Value="104" />
+        <Setter Property="Margin" Value="0,0,12,12" />
+    </Style>
+
+    <Style x:Key="DsRightDetailPanel" TargetType="Border" BasedOn="{StaticResource DsCard}">
+        <Setter Property="Padding" Value="18" />
+        <Setter Property="MinWidth" Value="320" />
+    </Style>
+
+    <Style x:Key="DsActionToolbar" TargetType="Border" BasedOn="{StaticResource DsCard}">
+        <Setter Property="Padding" Value="14" />
+        <Setter Property="Margin" Value="0,0,0,16" />
+    </Style>
+
+    <Style x:Key="DsEmptyStateCard" TargetType="Border" BasedOn="{StaticResource DsCard}">
+        <Setter Property="Padding" Value="24" />
+        <Setter Property="MinHeight" Value="140" />
+    </Style>
+
+    <Style x:Key="DsPrimaryButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="#6D28D9" />
+        <Setter Property="BorderBrush" Value="#6D28D9" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="14,9" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                   TextAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="#5B21B6" />
+                            <Setter TargetName="Root" Property="BorderBrush" Value="#5B21B6" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="#4C1D95" />
+                            <Setter TargetName="Root" Property="BorderBrush" Value="#4C1D95" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Background" Value="#7C3AED" />
+                            <Setter TargetName="Root" Property="BorderBrush" Value="#7C3AED" />
+                            <Setter TargetName="Root" Property="Opacity" Value="0.55" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DsSecondaryButton" TargetType="Button" BasedOn="{StaticResource DsPrimaryButton}">
+        <Setter Property="Foreground" Value="{StaticResource DsPrimaryNavyBrush}" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource DsBorderBrush}" />
+    </Style>
+
+    <Style x:Key="DsDangerButton" TargetType="Button" BasedOn="{StaticResource DsPrimaryButton}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource DsDangerBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource DsDangerBrush}" />
+    </Style>
+
+    <Style x:Key="DsFilterTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="12,9" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource DsBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="MinHeight" Value="38" />
+    </Style>
+
+    <Style x:Key="DsTabItem" TargetType="TabItem">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource DsTextSecondaryBrush}" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Root" Background="Transparent" BorderThickness="0,0,0,2" BorderBrush="Transparent" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter ContentSource="Header" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource DsAccentTealBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource DsAccentTealBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DsTableTextBlock" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource DsPrimaryNavyBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Padding" Value="8,6" />
+    </Style>
+
+    <Style x:Key="DsDataGrid" TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource DsBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DsBorderBrush}" />
+        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DsBorderBrush}" />
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="RowHeaderWidth" Value="0" />
+        <Setter Property="CanUserAddRows" Value="False" />
+        <Setter Property="CanUserDeleteRows" Value="False" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="RowHeight" Value="68" />
+        <Setter Property="ColumnHeaderHeight" Value="44" />
+        <Setter Property="AlternatingRowBackground" Value="#FAFBFD" />
+    </Style>
+
+    <Style x:Key="DsStatusBadge" TargetType="Border">
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="Background" Value="#ECFDF5" />
+        <Setter Property="BorderBrush" Value="#BBF7D0" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style x:Key="DsInsightCard" TargetType="Border" BasedOn="{StaticResource DsCard}">
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="BorderBrush" Value="#BFDBFE" />
+        <Setter Property="Background" Value="#F8FBFF" />
+    </Style>
+</ResourceDictionary>

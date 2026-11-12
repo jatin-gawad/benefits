@@ -1,0 +1,472 @@
+<UserControl x:Class="RenewalReviewBuilder.App.Views.ClientFinancialIntelligenceDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F7F9FC">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="FinancialTextBrush" Color="#071B4D" />
+        <SolidColorBrush x:Key="FinancialMutedBrush" Color="#64748B" />
+        <SolidColorBrush x:Key="FinancialBorderBrush" Color="#DDE5F0" />
+        <SolidColorBrush x:Key="FinancialPurpleBrush" Color="#6D28D9" />
+        <SolidColorBrush x:Key="FinancialGreenBrush" Color="#059669" />
+        <SolidColorBrush x:Key="FinancialOrangeBrush" Color="#F97316" />
+        <SolidColorBrush x:Key="FinancialRedBrush" Color="#DC2626" />
+
+        <Style x:Key="FinancialCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource FinancialBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+
+        <Style x:Key="FinancialLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource FinancialMutedBrush}" />
+            <Setter Property="FontSize" Value="11.5" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style x:Key="FinancialValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource FinancialTextBrush}" />
+            <Setter Property="FontSize" Value="21" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style x:Key="FinancialButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource FinancialBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource FinancialTextBrush}" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="13,8" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style x:Key="FinancialPrimaryButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource FinancialButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource FinancialPurpleBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource FinancialPurpleBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style x:Key="FinancialGridStyle" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="CanUserSortColumns" Value="True" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="RowHeaderWidth" Value="0" />
+            <Setter Property="BorderBrush" Value="{StaticResource FinancialBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E5EAF2" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="RowHeight" Value="29" />
+            <Setter Property="ColumnHeaderHeight" Value="32" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="EnableRowVirtualization" Value="True" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Grid Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Client Workspace"
+                               Foreground="{StaticResource FinancialPurpleBrush}"
+                               FontSize="12"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="  &gt;  " Style="{StaticResource FinancialLabelStyle}" />
+                    <TextBlock Text="Financial Intelligence"
+                               Foreground="{StaticResource FinancialTextBrush}"
+                               FontSize="12"
+                               FontWeight="SemiBold" />
+                </StackPanel>
+                <TextBlock Text="Financial Intelligence"
+                           Foreground="{StaticResource FinancialTextBrush}"
+                           FontSize="25"
+                           FontWeight="Bold" />
+                <TextBlock x:Name="HeaderSubtitleTextBlock"
+                           Text="Select a client to load saved ASO financial activity."
+                           Style="{StaticResource FinancialLabelStyle}"
+                           FontSize="13"
+                           Margin="0,5,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                <Button Content="Import ASO Activity"
+                        Style="{StaticResource FinancialPrimaryButtonStyle}"
+                        Width="155"
+                        Click="ImportAsoActivity_Click" />
+                <Button Content="Refresh"
+                        Style="{StaticResource FinancialButtonStyle}"
+                        Width="96"
+                        Margin="8,0,0,0"
+                        Click="Refresh_Click" />
+            </StackPanel>
+        </Grid>
+
+        <Border x:Name="EmptyStateBorder"
+                Style="{StaticResource FinancialCardStyle}"
+                MinHeight="260">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        MaxWidth="680">
+                <Border Width="58"
+                        Height="58"
+                        CornerRadius="29"
+                        Background="#F5F3FF"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="$"
+                               Foreground="{StaticResource FinancialPurpleBrush}"
+                               FontSize="25"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+                <TextBlock x:Name="EmptyStateTitleTextBlock"
+                           Text="No saved ASO financial activity for this client yet."
+                           Foreground="{StaticResource FinancialTextBrush}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           Margin="0,16,0,7" />
+                <TextBlock x:Name="EmptyStateMessageTextBlock"
+                           Text="Import an ASO Activity workbook, or let Document Operations discover and process it. Approved results will load here from SQLite."
+                           Style="{StaticResource FinancialLabelStyle}"
+                           FontSize="13"
+                           TextAlignment="Center"
+                           Margin="0,0,0,16" />
+                <Button Content="Import ASO Activity"
+                        Style="{StaticResource FinancialPrimaryButtonStyle}"
+                        Width="155"
+                        HorizontalAlignment="Center"
+                        Click="ImportAsoActivity_Click" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel x:Name="DashboardContentPanel" Visibility="Collapsed">
+            <!-- Executive summary stays in the existing Financial Intelligence surface; it does not create a second navigation layer. -->
+            <Border Background="#EEF2FF" BorderBrush="#D8DDFE" BorderThickness="1" CornerRadius="12" Padding="18" Margin="0,0,0,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.15*" />
+                        <ColumnDefinition Width="1.45*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="OVERALL FUNDING STATUS" Foreground="#4338CA" FontSize="11" FontWeight="Bold" />
+                        <TextBlock x:Name="FundingStatusTextBlock" Text="Funding review required" Foreground="{StaticResource FinancialTextBrush}" FontSize="25" FontWeight="Bold" Margin="0,6,0,3" />
+                        <TextBlock x:Name="FundingStatusDetailTextBlock" Text="Based on the latest saved ASO statement." Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="20,0">
+                        <TextBlock Text="KEY INSIGHTS" Foreground="#4338CA" FontSize="11" FontWeight="Bold" />
+                        <TextBlock x:Name="FundingInsightOneTextBlock" Text="• Latest balance and required float are shown below." Foreground="{StaticResource FinancialTextBrush}" FontSize="12" Margin="0,7,0,3" TextWrapping="Wrap" />
+                        <TextBlock x:Name="FundingInsightTwoTextBlock" Text="• Confirm a complete rolling window before using annualized pricing." Foreground="{StaticResource FinancialTextBrush}" FontSize="12" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Border Grid.Column="2" Background="#E4E1FF" CornerRadius="10" Padding="14">
+                        <StackPanel>
+                            <TextBlock Text="✦ CONSULTANT RECOMMENDATION" Foreground="#5B21B6" FontSize="11" FontWeight="Bold" />
+                            <TextBlock x:Name="FundingRecommendationTextBlock" Text="Review Funding Position" Foreground="{StaticResource FinancialTextBrush}" FontSize="18" FontWeight="Bold" Margin="0,5,0,4" TextWrapping="Wrap" />
+                            <TextBlock Text="Use the saved statement and canonical terms before discussing renewal funding." Style="{StaticResource FinancialLabelStyle}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <UniformGrid Columns="6" Margin="0,0,0,14">
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,9,0">
+                    <StackPanel>
+                        <TextBlock Text="Current Balance" Style="{StaticResource FinancialLabelStyle}" FontWeight="SemiBold" />
+                        <TextBlock x:Name="CurrentBalanceTextBlock"
+                                   Text="$0"
+                                   Style="{StaticResource FinancialValueStyle}"
+                                   Foreground="{StaticResource FinancialGreenBrush}"
+                                   Margin="0,7,0,2" />
+                        <TextBlock x:Name="BalanceStatusTextBlock" Text="Not available" Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,9,0">
+                    <StackPanel>
+                        <TextBlock Text="ASO Loss Ratio" Style="{StaticResource FinancialLabelStyle}" FontWeight="SemiBold" />
+                        <TextBlock x:Name="LossRatioTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource FinancialValueStyle}"
+                                   Foreground="#2563EB"
+                                   Margin="0,7,0,2" />
+                        <TextBlock Text="benefits / deposits" Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,9,0">
+                    <StackPanel>
+                        <TextBlock Text="Benefit Payments" Style="{StaticResource FinancialLabelStyle}" FontWeight="SemiBold" />
+                        <TextBlock x:Name="BenefitPaymentsTextBlock"
+                                   Text="$0"
+                                   Style="{StaticResource FinancialValueStyle}"
+                                   Foreground="{StaticResource FinancialPurpleBrush}"
+                                   Margin="0,7,0,2" />
+                        <TextBlock Text="pooled + unpooled" Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,9,0">
+                    <StackPanel>
+                        <TextBlock Text="Admin + Taxes" Style="{StaticResource FinancialLabelStyle}" FontWeight="SemiBold" />
+                        <TextBlock x:Name="AdminTaxesTextBlock"
+                                   Text="$0"
+                                   Style="{StaticResource FinancialValueStyle}"
+                                   Foreground="{StaticResource FinancialOrangeBrush}"
+                                   Margin="0,7,0,2" />
+                        <TextBlock Text="saved activity total" Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,9,0">
+                    <StackPanel>
+                        <TextBlock Text="Interest" Style="{StaticResource FinancialLabelStyle}" FontWeight="SemiBold" />
+                        <TextBlock x:Name="InterestTextBlock"
+                                   Text="$0"
+                                   Style="{StaticResource FinancialValueStyle}"
+                                   Margin="0,7,0,2" />
+                        <TextBlock x:Name="InterestStatusTextBlock" Text="Credit / charge" Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource FinancialCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Required Float" Style="{StaticResource FinancialLabelStyle}" FontWeight="SemiBold" />
+                        <TextBlock x:Name="RequiredFloatTextBlock"
+                                   Text="$0"
+                                   Style="{StaticResource FinancialValueStyle}"
+                                   Margin="0,7,0,2" />
+                        <TextBlock Text="latest month" Style="{StaticResource FinancialLabelStyle}" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <Grid Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1.25*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Current Balance Forecast" Foreground="{StaticResource FinancialTextBrush}" FontSize="16" FontWeight="Bold" DockPanel.Dock="Left" />
+                            <TextBlock Text="Actual saved activity" Foreground="{StaticResource FinancialPurpleBrush}" FontSize="11" FontWeight="SemiBold" DockPanel.Dock="Right" />
+                        </DockPanel>
+                        <Border Height="76" Background="#F8FAFF" CornerRadius="8" Margin="0,12,0,9" Padding="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Latest confirmed balance" Style="{StaticResource FinancialLabelStyle}" />
+                                    <TextBlock x:Name="ForecastBalanceTextBlock" Text="$0.00" Style="{StaticResource FinancialValueStyle}" Foreground="{StaticResource FinancialPurpleBrush}" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Source coverage" Style="{StaticResource FinancialLabelStyle}" HorizontalAlignment="Right" />
+                                    <TextBlock x:Name="ForecastCoverageTextBlock" Text="0 months" Foreground="{StaticResource FinancialTextBrush}" FontSize="14" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <TextBlock x:Name="ForecastStatusTextBlock" Text="Forecasting requires a complete saved ASO window; incomplete periods are not annualized." Style="{StaticResource FinancialLabelStyle}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource FinancialCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="CLAIMS RISK ASSESSMENT" Foreground="{StaticResource FinancialTextBrush}" FontSize="16" FontWeight="Bold" />
+                        <TextBlock x:Name="ClaimsRiskTextBlock" Text="Review saved activity" Foreground="{StaticResource FinancialPurpleBrush}" FontWeight="Bold" Margin="0,10,0,5" />
+                        <TextBlock x:Name="ClaimsRiskDetailTextBlock" Text="Loss-ratio assessment appears after ASO activity is loaded." Style="{StaticResource FinancialLabelStyle}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Saved Activity Period"
+                                   Foreground="{StaticResource FinancialTextBrush}"
+                                   FontSize="16"
+                                   FontWeight="Bold" />
+                        <TextBlock x:Name="PeriodTextBlock" Text="Not available" Style="{StaticResource FinancialLabelStyle}" FontSize="13" Margin="0,8,0,0" />
+                        <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
+                            <TextBlock Text="Saved statement: " Style="{StaticResource FinancialLabelStyle}" VerticalAlignment="Center" />
+                            <ComboBox x:Name="StatementHistoryComboBox"
+                                      Width="260"
+                                      DisplayMemberPath="DisplayName"
+                                      SelectionChanged="StatementHistoryComboBox_SelectionChanged" />
+                        </StackPanel>
+                        <TextBlock x:Name="ExperiencePeriodStatusTextBlock" Text="Experience period not confirmed" Style="{StaticResource FinancialLabelStyle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="HistoricalComparisonTextBlock" Text="Historical comparison unavailable" Style="{StaticResource FinancialLabelStyle}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="SourceTextBlock" Text="Source unavailable" Style="{StaticResource FinancialLabelStyle}" Margin="0,5,0,0" />
+                        <TextBlock x:Name="ContractTextBlock" Text="Contract not found" Style="{StaticResource FinancialLabelStyle}" Margin="0,5,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource FinancialCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Validation &amp; Version"
+                                   Foreground="{StaticResource FinancialTextBrush}"
+                                   FontSize="16"
+                                   FontWeight="Bold" />
+                        <TextBlock x:Name="VersionStatusTextBlock" Text="Not available" Style="{StaticResource FinancialLabelStyle}" FontSize="13" Margin="0,8,0,0" />
+                        <TextBlock x:Name="ValidationTextBlock" Text="No validation result" Style="{StaticResource FinancialLabelStyle}" Margin="0,5,0,0" />
+                        <TextBlock x:Name="ImportStatusTextBlock" Text="Ready" Style="{StaticResource FinancialLabelStyle}" Margin="0,5,0,0" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource FinancialCardStyle}">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,10">
+                        <TextBlock Text="Monthly ASO Activity"
+                                   Foreground="{StaticResource FinancialTextBrush}"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   DockPanel.Dock="Left" />
+                        <TextBlock x:Name="RowCountTextBlock"
+                                   Text="0 monthly rows"
+                                   Style="{StaticResource FinancialLabelStyle}"
+                                   DockPanel.Dock="Right" />
+                    </DockPanel>
+                    <DataGrid x:Name="MonthlyActivityGrid"
+                              Style="{StaticResource FinancialGridStyle}"
+                              Height="330">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="84" />
+                            <DataGridTextColumn Header="Opening" Binding="{Binding OpeningBalance}" Width="78" />
+                            <DataGridTextColumn Header="Deposit" Binding="{Binding TotalDeposit}" Width="78" />
+                            <DataGridTextColumn Header="Unpooled" Binding="{Binding UnpooledBenefits}" Width="78" />
+                            <DataGridTextColumn Header="Pooled" Binding="{Binding PooledBenefits}" Width="72" />
+                            <DataGridTextColumn Header="Benefits" Binding="{Binding TotalBenefits}" Width="78" />
+                            <DataGridTextColumn Header="Loss Ratio" Binding="{Binding LossRatio}" Width="67" />
+                            <DataGridTextColumn Header="Pooling" Binding="{Binding PoolingCharges}" Width="72" />
+                            <DataGridTextColumn Header="Admin" Binding="{Binding AdminFees}" Width="72" />
+                            <DataGridTextColumn Header="Other" Binding="{Binding OtherCharges}" Width="72" />
+                            <DataGridTextColumn Header="Taxes" Binding="{Binding TotalTaxes}" Width="72" />
+                            <DataGridTextColumn Header="Interest" Binding="{Binding Interest}" Width="72" />
+                            <DataGridTextColumn Header="Charges" Binding="{Binding TotalCharges}" Width="78" />
+                            <DataGridTextColumn Header="Current Balance" Binding="{Binding CurrentBalance}" Width="90" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="72" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <Border x:Name="FinancialArrangementComparisonPanel"
+                Style="{StaticResource FinancialCardStyle}"
+                Visibility="Collapsed"
+                Margin="0,14,0,0">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,10">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Financial Arrangement Comparison"
+                                   Foreground="{StaticResource FinancialTextBrush}"
+                                   FontSize="18"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="Read-only renewal comparison snapshots. Edit commission, pooling, and carrier charges through their canonical workflows."
+                                   Style="{StaticResource FinancialLabelStyle}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <StackPanel Margin="0,0,8,0" VerticalAlignment="Center">
+                            <TextBlock Text="Forecast window"
+                                       Style="{StaticResource FinancialLabelStyle}"
+                                       Margin="0,0,0,3" />
+                            <ComboBox x:Name="ForecastWindowComboBox"
+                                      Width="132"
+                                      Height="32"
+                                      SelectedValuePath="Tag"
+                                      SelectedIndex="2"
+                                      SelectedValue="12"
+                                      SelectionChanged="ForecastWindowComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Last 6 months" Tag="6" />
+                                <ComboBoxItem Content="Last 9 months" Tag="9" />
+                                <ComboBoxItem Content="Last 12 months" Tag="12" />
+                            </ComboBox>
+                        </StackPanel>
+                        <Button Content="Import / confirm terms"
+                                Style="{StaticResource FinancialButtonStyle}"
+                                Width="170"
+                                Margin="0,0,8,0"
+                                Click="ImportFinancialTerms_Click" />
+                        <Button Content="Set commission"
+                                Style="{StaticResource FinancialButtonStyle}"
+                                Width="125"
+                                Margin="0,0,8,0"
+                                Click="SetCommission_Click" />
+                        <Button Content="Refresh"
+                                Style="{StaticResource FinancialButtonStyle}"
+                                Width="88"
+                                Click="RefreshFinancialArrangementComparison_Click" />
+                    </StackPanel>
+                </DockPanel>
+                <Border x:Name="FinancialArrangementStaleBorder" Background="#FFF7ED" BorderBrush="#FED7AA" BorderThickness="1" CornerRadius="8" Padding="10" Visibility="Collapsed" Margin="0,0,0,10">
+                    <TextBlock Text="This comparison is stale. Review the existing snapshot against updated canonical terms, then refresh to create a new snapshot version."
+                               Foreground="#9A3412" TextWrapping="Wrap" />
+                </Border>
+                <UniformGrid Columns="5" Margin="0,0,0,10">
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,0"><StackPanel><TextBlock Text="Carrier Administration" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="ArrangementAdminTextBlock" Text="N/A" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,0"><StackPanel><TextBlock Text="Commission" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="ArrangementCommissionTextBlock" Text="N/A" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,0"><StackPanel><TextBlock Text="Total Administrative Load" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="ArrangementLoadTextBlock" Text="N/A" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,0"><StackPanel><TextBlock Text="Pooling Change" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="ArrangementPoolingTextBlock" Text="N/A" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}"><StackPanel><TextBlock Text="Projected Administrative Load" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="ArrangementCostTextBlock" Text="N/A" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/><TextBlock x:Name="ArrangementCostBasisTextBlock" Text="Select a forecast window" Style="{StaticResource FinancialLabelStyle}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" /></StackPanel></Border>
+                </UniformGrid>
+                <UniformGrid Columns="3" Margin="0,0,0,10">
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,7"><StackPanel><TextBlock Text="Projected Claims" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="ProjectedClaimsTextBlock" Text="Not Available" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,7"><StackPanel><TextBlock Text="Historical Annualized Run Rate" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="HistoricalRunRateTextBlock" Text="Not Available" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,0,7"><StackPanel><TextBlock Text="Current Terms Projected Cost" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="CurrentTermsProjectedCostTextBlock" Text="Not Available" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,0"><StackPanel><TextBlock Text="Renewal Terms Projected Cost" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="RenewalTermsProjectedCostTextBlock" Text="Not Available" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}" Margin="0,0,7,0"><StackPanel><TextBlock Text="Renewal Cost Change" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="RenewalCostChangeTextBlock" Text="Not Available" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                    <Border Style="{StaticResource FinancialCardStyle}"><StackPanel><TextBlock Text="Renewal Cost Change %" Style="{StaticResource FinancialLabelStyle}"/><TextBlock x:Name="RenewalCostChangePercentTextBlock" Text="Not Available" Style="{StaticResource FinancialValueStyle}" Margin="0,5,0,0"/></StackPanel></Border>
+                </UniformGrid>
+                <TextBlock x:Name="FinancialArrangementComparisonMessageTextBlock" Text="No financial arrangement snapshot exists for this client yet." Style="{StaticResource FinancialLabelStyle}" Margin="0,0,0,8" />
+                <DataGrid x:Name="FinancialProjectionBreakdownGrid" Style="{StaticResource FinancialGridStyle}" Height="230" Margin="0,0,0,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Component" Binding="{Binding Component}" Width="130" />
+                        <DataGridTextColumn Header="Historical Run Rate" Binding="{Binding Historical}" Width="150" />
+                        <DataGridTextColumn Header="Current Terms" Binding="{Binding Current}" Width="150" />
+                        <DataGridTextColumn Header="Renewal Terms" Binding="{Binding Renewal}" Width="150" />
+                        <DataGridTextColumn Header="Change" Binding="{Binding Change}" Width="125" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid x:Name="FinancialArrangementLoadGrid" Style="{StaticResource FinancialGridStyle}" Height="120" Margin="0,0,0,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Benefit" Binding="{Binding Benefit}" Width="90" />
+                        <DataGridTextColumn Header="Current Administration" Binding="{Binding CurrentAdministration}" Width="130" />
+                        <DataGridTextColumn Header="Renewal Administration" Binding="{Binding ProposedAdministration}" Width="135" />
+                        <DataGridTextColumn Header="Current Commission" Binding="{Binding CurrentCommission}" Width="120" />
+                        <DataGridTextColumn Header="Renewal Commission" Binding="{Binding ProposedCommission}" Width="125" />
+                        <DataGridTextColumn Header="Current Total Load" Binding="{Binding CurrentLoad}" Width="120" />
+                        <DataGridTextColumn Header="Renewal Total Load" Binding="{Binding ProposedLoad}" Width="125" />
+                        <DataGridTextColumn Header="Warning" Binding="{Binding Warning}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid x:Name="FinancialArrangementSnapshotGrid" Style="{StaticResource FinancialGridStyle}" Height="180">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Renewal" Binding="{Binding Renewal}" Width="80" />
+                        <DataGridTextColumn Header="Scenario" Binding="{Binding Scenario}" Width="120" />
+                        <DataGridTextColumn Header="Snapshot" Binding="{Binding SnapshotType}" Width="95" />
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100" />
+                        <DataGridTextColumn Header="Current Version" Binding="{Binding CurrentVersion}" Width="105" />
+                        <DataGridTextColumn Header="Proposed Version" Binding="{Binding ProposedVersion}" Width="115" />
+                        <DataGridTextColumn Header="Created" Binding="{Binding Created}" Width="145" />
+                        <DataGridTextColumn Header="Finalized By" Binding="{Binding FinalizedBy}" Width="125" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock Text="Source evidence remains attached to the canonical charge, pooling, and commission records referenced by each snapshot."
+                           Style="{StaticResource FinancialLabelStyle}" Margin="0,8,0,0" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,61 @@
+{
+  "carrier_name": "Manulife",
+  "carrier_key": "manulife",
+  "aliases": [
+    "manulife",
+    "manulife financial",
+    "the manufacturers life insurance company",
+    "manufacturers life"
+  ],
+  "file_name_keywords": [
+    "manulife",
+    "manufacturers"
+  ],
+  "section_keywords": {
+    "premium_summary": ["premium summary", "renewal premium", "total monthly premium", "cost summary"],
+    "rate_summary": ["rate summary", "renewal rates", "proposed rates", "monthly rates"],
+    "plan_design": ["schedule of benefits", "benefit summary", "coverage summary"],
+    "demographics": ["insured lives", "volume", "lives", "certificate count"],
+    "underwriting": ["underwriting assumptions", "renewal assumptions", "conditions"],
+    "pooling_retention": ["pooling", "large amount pooling", "target loss ratio", "tlr", "retention"]
+  },
+  "field_mappings": {
+    "client_name": ["client", "policyholder", "group name", "plan sponsor"],
+    "carrier_name": ["carrier", "insurer", "insurance company"],
+    "proposal_date": ["proposal date", "quote date", "prepared date"],
+    "effective_date": ["effective date", "renewal date"],
+    "monthly_premium": ["monthly premium", "renewal monthly premium", "total monthly premium"],
+    "annual_premium": ["annual premium", "renewal annual premium", "total annual premium"],
+    "rate": ["rate", "proposed rate", "renewal rate"],
+    "lives": ["lives", "employees", "insured lives", "certificates"],
+    "volume": ["volume", "benefit volume", "insured volume"],
+    "pooling_level": ["pooling level", "pooling threshold", "large amount pooling"],
+    "pooling_charge": ["pooling charge", "pooling fee"],
+    "commission": ["commission", "broker commission"],
+    "retention": ["retention", "expense charge", "admin charge"],
+    "target_loss_ratio": ["target loss ratio", "tlr"]
+  },
+  "benefit_mappings": {
+    "Extended Health Care": ["ehc", "extended health", "health"],
+    "Dental Care": ["dental", "dental care"],
+    "Employee Life": ["life", "employee life", "basic life"],
+    "Dependent Life": ["dependent life", "dep life"],
+    "AD&D": ["ad&d", "accidental death"],
+    "Long Term Disability": ["ltd", "long term disability"],
+    "Short Term Disability": ["std", "short term disability"],
+    "Critical Illness": ["critical illness", "ci"],
+    "EAP": ["eap", "employee assistance program"],
+    "Virtual Care": ["virtual care", "telemedicine"]
+  },
+  "tier_mappings": {
+    "Single": ["single", "employee only", "ee"],
+    "Couple": ["couple", "ee + spouse", "employee plus spouse"],
+    "Family": ["family", "ee + family", "employee plus family"],
+    "Employee plus child": ["employee plus child", "ee + child"]
+  },
+  "confidence_rules": {
+    "high": "exact label match and numeric value found nearby",
+    "medium": "similar label match and numeric value found in same row or table",
+    "low": "keyword found but value location is uncertain"
+  }
+}

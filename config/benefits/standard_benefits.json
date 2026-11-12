@@ -1,0 +1,110 @@
+{
+  "standard_benefits": [
+    {
+      "benefit_key": "employee_life",
+      "canonical_name": "Employee Life Insurance",
+      "display_name": "Employee Life Insurance",
+      "category": "standard",
+      "sort_order": 10,
+      "aliases": ["employee life insurance", "employee life", "basic life", "life insurance", "life"]
+    },
+    {
+      "benefit_key": "employee_ad_d",
+      "canonical_name": "Employee AD&D",
+      "display_name": "Employee AD&D",
+      "category": "standard",
+      "sort_order": 20,
+      "aliases": ["employee ad&d", "ad&d", "accidental death", "accidental death and dismemberment", "asi", "accident & serious illness"]
+    },
+    {
+      "benefit_key": "dependent_life",
+      "canonical_name": "Dependent Life",
+      "display_name": "Dependent Life",
+      "category": "standard",
+      "sort_order": 30,
+      "aliases": ["dependent life", "dep life", "spouse life", "child life"]
+    },
+    {
+      "benefit_key": "long_term_disability",
+      "canonical_name": "Long Term Disability",
+      "display_name": "Long Term Disability",
+      "category": "standard",
+      "sort_order": 40,
+      "aliases": ["long term disability", "ltd", "employee long term disability"]
+    },
+    {
+      "benefit_key": "short_term_disability",
+      "canonical_name": "Short Term Disability",
+      "display_name": "Short Term Disability",
+      "category": "standard",
+      "sort_order": 50,
+      "aliases": ["short term disability", "std", "weekly indemnity", "employee short term disability"]
+    },
+    {
+      "benefit_key": "extended_health_care",
+      "canonical_name": "Extended Health Care",
+      "display_name": "Extended Health Care",
+      "category": "standard",
+      "sort_order": 60,
+      "aliases": ["extended health care", "extended health", "health care", "health", "ehc", "major medical"]
+    },
+    {
+      "benefit_key": "dental_care",
+      "canonical_name": "Dental Care",
+      "display_name": "Dental Care",
+      "category": "standard",
+      "sort_order": 70,
+      "aliases": ["dental care", "dental"]
+    }
+  ],
+  "optional_benefits": [
+    {
+      "benefit_key": "critical_illness",
+      "canonical_name": "Critical Illness",
+      "display_name": "Critical Illness",
+      "category": "optional",
+      "sort_order": 110,
+      "aliases": ["critical illness", "critical disease", "serious illness", "ci", "covered illnesses"]
+    },
+    {
+      "benefit_key": "eap",
+      "canonical_name": "EAP",
+      "display_name": "EAP",
+      "category": "optional",
+      "sort_order": 120,
+      "aliases": ["eap", "employee assistance program", "employee family assistance", "employee & family assistance", "efap"]
+    },
+    {
+      "benefit_key": "virtual_healthcare",
+      "canonical_name": "Virtual Healthcare",
+      "display_name": "Virtual Healthcare",
+      "category": "optional",
+      "sort_order": 130,
+      "aliases": ["virtual healthcare", "virtual health care", "virtual care", "telemedicine", "telehealth", "dialogue", "sparrow"]
+    },
+    {
+      "benefit_key": "medical_second_opinion",
+      "canonical_name": "Medical Second Opinion",
+      "display_name": "Medical Second Opinion",
+      "category": "optional",
+      "sort_order": 140,
+      "aliases": ["medical second opinion", "second opinion", "medical services second opinion"]
+    },
+    {
+      "benefit_key": "hcsa",
+      "canonical_name": "HCSA",
+      "display_name": "HCSA",
+      "category": "optional",
+      "sort_order": 150,
+      "aliases": ["hcsa", "hsa", "health care spending account", "health spending account", "health/lifestyle spending accounts", "hsa/wsa"]
+    },
+    {
+      "benefit_key": "lifestyle_spending_account",
+      "canonical_name": "Lifestyle Spending Account",
+      "display_name": "Lifestyle Spending Account",
+      "category": "optional",
+      "sort_order": 160,
+      "aliases": ["wsa", "wellness spending account", "lifestyle spending account"]
+    }
+  ]
+}

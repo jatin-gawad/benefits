@@ -1,0 +1,288 @@
+<UserControl x:Class="RenewalReviewBuilder.App.Views.ControlledBookletReprocessingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="ControlledBookletReprocessingView_Loaded">
+    <Border Background="White"
+            BorderBrush="#DDE5F0"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="18">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="250" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="180" />
+                <RowDefinition Height="16" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="Booklet Plan Review"
+                               Foreground="#071B4D"
+                               FontSize="19"
+                               FontWeight="Bold" />
+                    <TextBlock x:Name="WorkflowStatusTextBlock"
+                               Text="Loading registered benefit booklets..."
+                               Foreground="#53627A"
+                               FontSize="12"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+                <TextBlock DockPanel.Dock="Right"
+                           Text="V1"
+                           Foreground="#0057D8"
+                           FontSize="12"
+                           FontWeight="Bold"
+                           VerticalAlignment="Top" />
+            </DockPanel>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="135" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="Registered Booklet"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <ComboBox Grid.Column="1"
+                          x:Name="DocumentComboBox"
+                          DisplayMemberPath="DisplayName"
+                          SelectionChanged="DocumentComboBox_SelectionChanged"
+                          MinHeight="36"
+                          Padding="8,5" />
+                <WrapPanel Grid.Column="2" Margin="12,0,0,0">
+                    <Button x:Name="RefreshDocumentsButton"
+                            Content="Refresh"
+                            Width="90"
+                            Height="36"
+                            Margin="0,0,10,0"
+                            Background="White"
+                            Foreground="#071B4D"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            Click="RefreshDocuments_Click" />
+                    <Button x:Name="StageBookletButton"
+                            Content="Stage Reprocess"
+                            Width="135"
+                            Height="36"
+                            Background="#003A8C"
+                            Foreground="White"
+                            Click="StageBooklet_Click" />
+                    <Button x:Name="CancelStagingButton"
+                            Content="Cancel"
+                            Width="85"
+                            Height="36"
+                            Margin="10,0,0,0"
+                            Background="White"
+                            Foreground="#991B1B"
+                            BorderBrush="#FCA5A5"
+                            BorderThickness="1"
+                            IsEnabled="False"
+                            Click="CancelStaging_Click" />
+                </WrapPanel>
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                    <TextBlock Text="Client" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="SelectedClientTextBlock" Text="-" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                    <TextBlock Text="Document" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="SelectedDocumentIdTextBlock" Text="-" FontWeight="SemiBold" Margin="0,3,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Margin="0,0,16,0">
+                    <TextBlock Text="Source Hash" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="SelectedHashTextBlock" Text="-" FontWeight="SemiBold" Margin="0,3,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="3">
+                    <TextBlock Text="Registered File" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="SelectedFileTextBlock" Text="-" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="0,3,0,0" />
+                </StackPanel>
+            </Grid>
+
+            <UniformGrid Grid.Row="6" Columns="5">
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Run Status" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="RunStatusTextBlock" Text="Not staged" Foreground="#071B4D" FontSize="15" FontWeight="Bold" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Current Rows" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="BeforeRowsTextBlock" Text="0" Foreground="#071B4D" FontSize="15" FontWeight="Bold" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Review Rows" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="StagedRowsTextBlock" Text="0" Foreground="#0057D8" FontSize="15" FontWeight="Bold" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel Margin="0,0,14,0">
+                    <TextBlock Text="Changes" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="ChangesSummaryTextBlock" Text="-" Foreground="#071B4D" FontSize="13" FontWeight="SemiBold" Margin="0,4,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Validation" Foreground="#64748B" FontSize="11" />
+                    <TextBlock x:Name="ValidationSummaryTextBlock" Text="-" Foreground="#071B4D" FontSize="13" FontWeight="SemiBold" Margin="0,4,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </UniformGrid>
+
+            <Grid Grid.Row="7" VerticalAlignment="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Plan Changes"
+                           Foreground="#003A8C"
+                           FontSize="14"
+                           FontWeight="Bold" />
+                <CheckBox Grid.Column="1"
+                          x:Name="ShowUnchangedRowsCheckBox"
+                          Content="Show unchanged"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Center"
+                          Margin="16,0"
+                          IsChecked="False"
+                          Click="ShowUnchangedRows_Click" />
+                <Button Grid.Column="2"
+                        x:Name="EditSelectedButton"
+                        Content="Edit Selected"
+                        Width="116"
+                        Height="30"
+                        Margin="0,0,16,0"
+                        Background="White"
+                        Foreground="#003A8C"
+                        BorderBrush="#93C5FD"
+                        BorderThickness="1"
+                        IsEnabled="False"
+                        ToolTip="Correct the selected review row"
+                        Click="EditSelected_Click" />
+                <TextBlock Grid.Column="3"
+                           x:Name="RunIdentityTextBlock"
+                           Text=""
+                           Foreground="#64748B"
+                           FontSize="11"
+                           VerticalAlignment="Center" />
+            </Grid>
+
+            <DataGrid Grid.Row="8"
+                      x:Name="ChangesGrid"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      SelectionChanged="ChangesGrid_SelectionChanged"
+                      MouseDoubleClick="ChangesGrid_MouseDoubleClick"
+                      HeadersVisibility="Column"
+                      RowHeaderWidth="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Change" Binding="{Binding ChangeType}" Width="90" />
+                    <DataGridTextColumn Header="Benefit" Binding="{Binding BenefitCategory}" Width="145" />
+                    <DataGridTextColumn Header="Provision" Binding="{Binding BenefitName}" Width="180" />
+                    <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="130" />
+                    <DataGridTextColumn Header="Before" Binding="{Binding BeforeValue}" Width="*" />
+                    <DataGridTextColumn Header="After" Binding="{Binding AfterValue}" Width="*" />
+                    <DataGridTextColumn Header="Page" Binding="{Binding SourcePage}" Width="60" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock Grid.Row="10"
+                       Text="Items to Resolve"
+                       Foreground="#003A8C"
+                       FontSize="14"
+                       FontWeight="Bold" />
+
+            <DataGrid Grid.Row="12"
+                      x:Name="IssuesGrid"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      HeadersVisibility="Column"
+                      RowHeaderWidth="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Level" Binding="{Binding Severity}" Width="85" />
+                    <DataGridCheckBoxColumn Header="Blocks Save" Binding="{Binding IsBlocking}" Width="90" />
+                    <DataGridTextColumn Header="Check" Binding="{Binding IssueCode}" Width="190" />
+                    <DataGridTextColumn Header="Benefit" Binding="{Binding BenefitName}" Width="150" />
+                    <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" />
+                    <DataGridTextColumn Header="Page" Binding="{Binding SourcePage}" Width="60" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Grid Grid.Row="14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Approval or Rejection Note" Foreground="#64748B" FontSize="11" />
+                    <TextBox x:Name="ReviewNoteTextBox"
+                             MinHeight="36"
+                             Margin="0,4,16,0"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+                <WrapPanel Grid.Column="1" VerticalAlignment="Bottom">
+                    <Button x:Name="OpenStagingFolderButton"
+                            Content="Open Extracted Files"
+                            Width="150"
+                            Height="36"
+                            Margin="0,0,10,0"
+                            Background="White"
+                            Foreground="#071B4D"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            IsEnabled="False"
+                            Click="OpenStagingFolder_Click" />
+                    <Button x:Name="OpenBackupButton"
+                            Content="Open Backup"
+                            Width="110"
+                            Height="36"
+                            Margin="0,0,10,0"
+                            Background="White"
+                            Foreground="#071B4D"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            IsEnabled="False"
+                            Click="OpenBackup_Click" />
+                    <Button x:Name="RejectRunButton"
+                            Content="Discard Review"
+                            Width="118"
+                            Height="36"
+                            Margin="0,0,10,0"
+                            Background="White"
+                            Foreground="#991B1B"
+                            BorderBrush="#FCA5A5"
+                            BorderThickness="1"
+                            IsEnabled="False"
+                            Click="RejectRun_Click" />
+                    <Button x:Name="ApproveRunButton"
+                            Content="Approve and Apply"
+                            Width="150"
+                            Height="36"
+                            Background="#008C8C"
+                            Foreground="White"
+                            IsEnabled="False"
+                            Click="ApproveRun_Click" />
+                </WrapPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

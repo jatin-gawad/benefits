@@ -1,0 +1,20 @@
+{
+  "aliases": {
+    "certificate_number": ["Certificate Num", "Certificate Number", "Certificate #"],
+    "last_name": ["Last Name", "Surname"],
+    "first_name": ["First Name", "Given Name"],
+    "class_name": ["Class Name"],
+    "class_code": ["Class Code", "Class"],
+    "plan_name": ["Plan Name"],
+    "plan_code": ["Plan Code", "Plan"],
+    "province_of_work": ["Province of Work", "Work Province"],
+    "province_of_residence": ["Province of Res", "Province of Residence", "Residence Province"],
+    "current_month_premium": ["All Benefits - Current Month Premium (1)", "All Benefits Current Month Premium"],
+    "prior_period_adjustment": ["All Benefits - Prior Period Adjustments' Premium (2)", "All Benefits - Prior Period Adjustments Premium (2)"],
+    "total_sales_tax": ["All Benefits - Total Sales Tax (3)", "All Benefits Total Sales Tax"],
+    "total_premium_and_tax": ["All Benefits - Total Premium & Tax (4)", "All Benefits Total Premium and Tax"],
+    "divisional_billing_code": ["Divisional Billing", "Division Billing"],
+    "bill_total_6": ["Bill Total 6"],
+    "bill_total_7": ["Bill Total 7"]
+  }
+}

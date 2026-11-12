@@ -1,0 +1,619 @@
+<UserControl x:Class="RenewalReviewBuilder.App.Views.ClientHistoryWorkspaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore"
+             Background="#F5F7FB"
+             FontFamily="Segoe UI Variable Text, Segoe UI"
+             FontSize="13">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="HistoryBlue" Color="#0B5DE8"/>
+        <SolidColorBrush x:Key="HistoryNavy" Color="#071A45"/>
+        <SolidColorBrush x:Key="HistoryMuted" Color="#5F6F89"/>
+        <SolidColorBrush x:Key="HistoryBorder" Color="#D9E2EF"/>
+
+        <Style x:Key="HistoryCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HistoryBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="7"/>
+            <Setter Property="Effect">
+                <Setter.Value><DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.06" Color="#10264B"/></Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryKpiLabelText" TargetType="TextBlock" BasedOn="{StaticResource DsCardTitle}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="{StaticResource HistoryMuted}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="LineHeight" Value="18"/>
+        </Style>
+
+        <Style x:Key="HistoryKpiValueText" TargetType="TextBlock" BasedOn="{StaticResource DsPageTitle}">
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource HistoryNavy}"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="HistoryKpiSubtitleText" TargetType="TextBlock" BasedOn="{StaticResource DsSmallText}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource HistoryMuted}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="LineHeight" Value="16"/>
+        </Style>
+
+        <Style x:Key="HistoryKpiIconBadge" TargetType="Border">
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="CornerRadius" Value="19"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+
+        <Style x:Key="HistoryActionButton" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource HistoryNavy}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HistoryBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Root" Property="Background" Value="#F2F6FD"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource HistoryNavy}"/><Setter TargetName="Root" Property="BorderThickness" Value="2"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Root" Property="Opacity" Value="0.5"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryPrimaryButton" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource HistoryBlue}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HistoryBlue}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="PrimaryRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="PrimaryRoot" Property="Background" Value="#094FC5"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="PrimaryRoot" Property="BorderBrush" Value="White"/><Setter TargetName="PrimaryRoot" Property="BorderThickness" Value="2"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="PrimaryRoot" Property="Opacity" Value="0.5"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryModeTab" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Padding" Value="11,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource HistoryNavy}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="TabRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="TabRoot" Property="Background" Value="#F5F8FE"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="TabRoot" Property="BorderBrush" Value="{StaticResource HistoryNavy}"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryPillButton" TargetType="Button" BasedOn="{StaticResource HistoryActionButton}">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="9,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,3,3"/>
+        </Style>
+
+        <Style x:Key="HistorySummaryButton" TargetType="Button">
+            <Setter Property="Height" Value="66"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="SummaryRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="SummaryRoot" Property="Background" Value="#F5F8FE"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="SummaryRoot" Property="BorderBrush" Value="{StaticResource HistoryNavy}"/><Setter TargetName="SummaryRoot" Property="BorderThickness" Value="2"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryMilestoneIcon" TargetType="Border">
+            <Setter Property="Width" Value="23"/>
+            <Setter Property="Height" Value="23"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="{Binding AccentBackground}"/>
+            <Setter Property="BorderBrush" Value="{Binding AccentColor}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Width" Value="27"/>
+                    <Setter Property="Height" Value="27"/>
+                    <Setter Property="CornerRadius" Value="14"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource HistoryBlue}"/>
+                    <Setter Property="BorderThickness" Value="3"/>
+                    <Setter Property="Background" Value="#EEF4FF"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="HistoryRenewalDot" TargetType="Ellipse">
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Fill" Value="#16A05A"/>
+            <Setter Property="Stroke" Value="White"/>
+            <Setter Property="StrokeThickness" Value="3"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCarrierChange}" Value="True"><Setter Property="Fill" Value="{StaticResource HistoryBlue}"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True"><Setter Property="Fill" Value="#6D28D9"/><Setter Property="Stroke" Value="#D8C7FF"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="Width" Value="17"/><Setter Property="Height" Value="17"/><Setter Property="Stroke" Value="{StaticResource HistoryBlue}"/><Setter Property="StrokeThickness" Value="4"/></DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="HistorySelectedMarker" TargetType="TextBlock">
+            <Setter Property="Text" Value="SELECTED"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Foreground" Value="{StaticResource HistoryBlue}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Style.Triggers><DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+        </Style>
+
+        <Style x:Key="HistoryTimelineItem" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="MinHeight" Value="48"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E4EAF2"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="RowRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" Padding="6,5">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowRoot" Property="Background" Value="#EEF4FF"/>
+                                <Setter TargetName="RowRoot" Property="BorderBrush" Value="{StaticResource HistoryBlue}"/>
+                                <Setter TargetName="RowRoot" Property="BorderThickness" Value="3,0,0,1"/>
+                                <Setter Property="automation:AutomationProperties.Name" Value="Selected history event"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="RowRoot" Property="Background" Value="#F8FAFD"/></Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="RowRoot" Property="BorderBrush" Value="{StaticResource HistoryNavy}"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryActivityButton" TargetType="Button" BasedOn="{StaticResource HistoryActionButton}">
+            <Setter Property="Height" Value="64"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ActivityRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Content"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ActivityRoot" Property="Background" Value="#F2F6FD"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="ActivityRoot" Property="BorderBrush" Value="{StaticResource HistoryNavy}"/><Setter TargetName="ActivityRoot" Property="BorderThickness" Value="2"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ActivityRoot" Property="Opacity" Value="0.5"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="Background" Value="#EEF4FF"/><Setter Property="BorderBrush" Value="{StaticResource HistoryBlue}"/></DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="DrawerColumn" Width="0"/></Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="12,10,14,12">
+                <Grid Margin="0,0,0,9">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="153"/><ColumnDefinition Width="53"/><ColumnDefinition Width="150"/><ColumnDefinition Width="85"/></Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Client History" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}"/>
+                        <TextBlock Text="A complete view of the client's benefits program evolution, decisions, and outcomes." FontSize="13" Foreground="{StaticResource HistoryMuted}" Margin="0,2,0,0"/>
+                    </StackPanel>
+                    <Border Grid.Column="1" Margin="8,0,0,0" Background="White" BorderBrush="{StaticResource HistoryBorder}" BorderThickness="1" CornerRadius="6">
+                    <Grid>
+                        <TextBox x:Name="HistorySearchTextBox" Height="46" Padding="12,7,32,7" FontSize="13" VerticalContentAlignment="Center"
+                                 Background="Transparent" BorderThickness="0" TextChanged="HistorySearchTextBox_TextChanged"
+                                 automation:AutomationProperties.Name="Search history"/>
+                        <TextBlock x:Name="HistorySearchWatermark" Text="Search history..." FontSize="13" Foreground="#7A889D" Margin="10,0,28,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource HistoryBlue}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,9,0" IsHitTestVisible="False"/>
+                    </Grid></Border>
+                    <ToggleButton x:Name="HistoryFiltersToggle" Grid.Column="2" Content="Filters" Height="46" MinHeight="0" Margin="8,0,0,0"
+                                  Background="White" Foreground="{StaticResource HistoryNavy}" BorderBrush="{StaticResource HistoryBorder}" FontSize="13" FontWeight="SemiBold"/>
+                    <Popup PlacementTarget="{Binding ElementName=HistoryFiltersToggle}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=HistoryFiltersToggle}" StaysOpen="False" AllowsTransparency="True">
+                        <Border Style="{StaticResource HistoryCard}" Padding="12" Width="240" Margin="0,5,0,0">
+                            <StackPanel>
+                                <TextBlock Text="History filters" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" Margin="0,0,0,8"/>
+                                <TextBlock Text="From" FontSize="13" Foreground="{StaticResource HistoryMuted}"/>
+                                <DatePicker x:Name="HistoryDateFromPicker" Height="44" SelectedDateChanged="HistoryDateFilter_Changed" automation:AutomationProperties.Name="History filter from date"/>
+                                <TextBlock Text="To" FontSize="13" Foreground="{StaticResource HistoryMuted}" Margin="0,7,0,0"/>
+                                <DatePicker x:Name="HistoryDateToPicker" Height="44" SelectedDateChanged="HistoryDateFilter_Changed" automation:AutomationProperties.Name="History filter to date"/>
+                                <Button Content="Clear filters" Style="{StaticResource HistoryActionButton}" Margin="0,9,0,0" Click="ClearFilters_Click"/>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                    <Button x:Name="AddHistoricalRenewalButton" Grid.Column="3" Style="{StaticResource HistoryActionButton}" Margin="8,0,0,0"
+                            Click="AddHistoricalRenewal_Click" automation:AutomationProperties.Name="Add Historical Renewal">
+                        <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8EF;" FontFamily="Segoe MDL2 Assets" FontSize="13" Margin="0,1,6,0"/><TextBlock Text="Historical Renewal"/></StackPanel>
+                    </Button>
+                    <Button x:Name="AddHistoryButton" Grid.Column="4" Style="{StaticResource HistoryPrimaryButton}" Margin="8,0,0,0"
+                            Click="AddHistory_Click" automation:AutomationProperties.Name="Add History Event">
+                        <StackPanel Orientation="Horizontal"><TextBlock Text="+" Foreground="White" FontSize="13" Margin="0,-1,5,0"/><TextBlock Text="Add History" Foreground="White"/><TextBlock Text="&#xE70D;" Foreground="White" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="5,1,0,0"/></StackPanel>
+                    </Button>
+                </Grid>
+
+                <UniformGrid x:Name="HistoryKpiGrid" Columns="5" MinHeight="132" Margin="0,0,0,12">
+                    <Border Style="{StaticResource HistoryCard}" Padding="12" Margin="0,0,7,0">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource HistoryKpiIconBadge}" Background="#EEE8FF"><TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" Foreground="#6D28D9" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <StackPanel Grid.Column="1"><TextBlock Text="Years as Client" Style="{StaticResource HistoryKpiLabelText}"/><TextBlock Text="{Binding Workspace.Kpis.YearsAsClient, TargetNullValue=--}" Style="{StaticResource HistoryKpiValueText}" FontSize="34" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/><TextBlock Text="{Binding Workspace.ReplayDisplayLabel}" Style="{StaticResource HistoryKpiSubtitleText}"/></StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource HistoryCard}" Padding="12" Margin="0,0,7,0">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource HistoryKpiIconBadge}" Background="#E8F7EF"><TextBlock Text="$" Foreground="#0B9A55" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <StackPanel Grid.Column="1"><TextBlock Text="Total Value Created" Style="{StaticResource HistoryKpiLabelText}"/><TextBlock Text="{Binding Workspace.Kpis.TotalValueCreated, StringFormat={}{0:C0}, TargetNullValue=--}" Style="{StaticResource HistoryKpiValueText}" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/><TextBlock Text="Approved canonical values" Style="{StaticResource HistoryKpiSubtitleText}"/></StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource HistoryCard}" Padding="12" Margin="0,0,7,0">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource HistoryKpiIconBadge}" Background="#FFF0E4"><TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" Foreground="#F47A13" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <StackPanel Grid.Column="1"><TextBlock Text="Average Renewal Increase" Style="{StaticResource HistoryKpiLabelText}"/><TextBlock Text="{Binding Workspace.Kpis.AverageRenewalIncrease, StringFormat={}{0:P1}, TargetNullValue=--}" Style="{StaticResource HistoryKpiValueText}" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/><TextBlock Text="{Binding Workspace.AverageRenewalIncreaseSubtitle}" Style="{StaticResource HistoryKpiSubtitleText}"/></StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource HistoryCard}" Padding="12" Margin="0,0,7,0">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource HistoryKpiIconBadge}" Background="#E8EEFF"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource HistoryBlue}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <StackPanel Grid.Column="1"><TextBlock Text="Current Carrier" Style="{StaticResource HistoryKpiLabelText}"/><TextBlock Text="{Binding Workspace.CurrentCarrierDisplay}" Style="{StaticResource HistoryKpiValueText}" FontSize="30" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="66" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/><TextBlock Text="{Binding Workspace.ReplayDisplayLabel}" Style="{StaticResource HistoryKpiSubtitleText}"/></StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource HistoryCard}" Padding="12">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource HistoryKpiIconBadge}" Background="#F5ECFF"><TextBlock Text="AI" Foreground="#7C3AED" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <StackPanel Grid.Column="1"><TextBlock Text="AI History Summary" Style="{StaticResource HistoryKpiLabelText}"/><TextBlock Text="Current-state only" FontSize="18" FontWeight="SemiBold" Foreground="#7C3AED" Margin="0,5,0,0" TextWrapping="Wrap"/><TextBlock Text="Not regenerated in Replay" Style="{StaticResource HistoryKpiSubtitleText}" Margin="0,3,0,0"/></StackPanel>
+                        </Grid>
+                    </Border>
+                </UniformGrid>
+
+                <Grid Height="135" Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource HistoryCard}" Padding="10" Margin="0,0,5,0">
+                        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <TextBlock Text="Relationship Timeline (Key Milestones)" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}"/>
+                            <TextBlock Grid.Row="1" Text="{Binding Workspace.RelationshipTimelineStatusText}" FontSize="10" Foreground="{StaticResource HistoryMuted}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Workspace.RelationshipTimelineStatusText}"/>
+                            <Grid Grid.Row="2" Margin="0,3,0,0">
+                                <Border Height="1" Background="#B8C7DA" VerticalAlignment="Center" Margin="42,0" IsHitTestVisible="False"/>
+                                <ItemsControl ItemsSource="{Binding RelationshipMilestones}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource HistorySummaryButton}" Tag="{Binding EventId}" Click="RelationshipMilestone_Click" ToolTip="{Binding ScreenReaderDescription}" automation:AutomationProperties.Name="{Binding ScreenReaderDescription}">
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Style="{StaticResource HistorySelectedMarker}" HorizontalAlignment="Center"/>
+                                                    <Border Style="{StaticResource HistoryMilestoneIcon}" Margin="0,1">
+                                                        <TextBlock Text="{Binding IconGlyph}" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{Binding AccentColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding DateReference.Year}" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" HorizontalAlignment="Center" MinWidth="30" TextAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Label}" FontSize="10" Foreground="#314563" TextWrapping="Wrap" TextTrimming="WordEllipsis" TextAlignment="Center" LineHeight="11" MaxHeight="22" Margin="1,1,1,0" ToolTip="{Binding Label}"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource HistoryCard}" Padding="10" Margin="5,0,0,0">
+                        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <TextBlock Text="Renewal Evolution" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}"/>
+                                <TextBlock Grid.Column="1" Text="Canonical values only" FontSize="13" Foreground="{StaticResource HistoryBlue}" Margin="10,1,0,0"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding Workspace.RenewalEvolutionStatusText}" FontSize="10" Foreground="{StaticResource HistoryMuted}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Workspace.RenewalEvolutionStatusText}"/>
+                            <Grid Grid.Row="2" Margin="0,3,0,0">
+                                <Border Height="1" Background="#B8C7DA" VerticalAlignment="Center" Margin="42,0" IsHitTestVisible="False"/>
+                                <ItemsControl ItemsSource="{Binding RenewalPoints}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource HistorySummaryButton}" Tag="{Binding EventId}" Click="RenewalPoint_Click" ToolTip="{Binding DetailDescription}" automation:AutomationProperties.Name="{Binding EffectiveDateDisplay, StringFormat=Renewal {0}}">
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <TextBlock Style="{StaticResource HistorySelectedMarker}" HorizontalAlignment="Center"/>
+                                                    <Ellipse Style="{StaticResource HistoryRenewalDot}" Margin="0,2"/>
+                                                    <TextBlock Text="{Binding DateReference.Year}" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" HorizontalAlignment="Center" MinWidth="30" TextAlignment="Center"/>
+                                                    <TextBlock Text="{Binding FinalIncreaseDisplay}" FontSize="13" Foreground="{StaticResource HistoryBlue}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding RenewalStatus}" FontSize="10" Foreground="{StaticResource HistoryMuted}" TextTrimming="CharacterEllipsis" MaxWidth="84" HorizontalAlignment="Center" ToolTip="{Binding RenewalStatus}"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Grid Height="560">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="7*"/><ColumnDefinition Width="4*"/></Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource HistoryCard}" Padding="10" Margin="0,0,5,0">
+                        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <Button Content="Timeline" Click="Timeline_Click">
+                                    <Button.Style><Style TargetType="Button" BasedOn="{StaticResource HistoryModeTab}"><Style.Triggers><DataTrigger Binding="{Binding Presentation.IsTimelineVisible}" Value="True"><Setter Property="Foreground" Value="{StaticResource HistoryBlue}"/><Setter Property="BorderBrush" Value="{StaticResource HistoryBlue}"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                                </Button>
+                                <Button Content="Evolution View" Click="Evolution_Click">
+                                    <Button.Style><Style TargetType="Button" BasedOn="{StaticResource HistoryModeTab}"><Style.Triggers><DataTrigger Binding="{Binding Presentation.IsEvolutionVisible}" Value="True"><Setter Property="Foreground" Value="{StaticResource HistoryBlue}"/><Setter Property="BorderBrush" Value="{StaticResource HistoryBlue}"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                                </Button>
+                                <Button Content="Audit View" Style="{StaticResource HistoryModeTab}"/>
+                            </StackPanel>
+                            <DockPanel Grid.Row="1" Margin="0,0,0,6">
+                                <ComboBox DockPanel.Dock="Right" Width="90" Height="24" Margin="4,0,0,3" FontSize="13" SelectedIndex="0" automation:AutomationProperties.Name="Group history events">
+                                    <ComboBoxItem Content="Group by: Date"/><ComboBoxItem Content="Group by: Year"/>
+                                </ComboBox>
+                                <WrapPanel x:Name="CategoryPanel">
+                                    <Button Content="All Events" Tag="All benefit areas" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Plan Design" Tag="Plan Design" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Carrier / Vendor" Tag="Carrier / Vendor" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Financial" Tag="Financial" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Renewals" Tag="Renewals" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Market" Tag="Market" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Administration" Tag="Administration" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                    <Button Content="Other" Tag="Other" Style="{StaticResource HistoryPillButton}" Click="Category_Click"/>
+                                </WrapPanel>
+                            </DockPanel>
+
+                            <Grid Grid.Row="2">
+                                <Grid.RowDefinitions><RowDefinition Height="50"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <Grid Background="#FAFBFD">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.15*"/><ColumnDefinition Width="4.9*"/><ColumnDefinition Width="1.8*"/><ColumnDefinition Width="0"/><ColumnDefinition Width="0"/><ColumnDefinition Width="1.15*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="DATE" FontSize="13" Foreground="#52627A" VerticalAlignment="Center" Margin="6,0"/>
+                                    <TextBlock Grid.Column="1" Text="EVENT" FontSize="13" Foreground="#52627A" VerticalAlignment="Center" Margin="6,0"/>
+                                    <TextBlock Grid.Column="2" Text="IMPACT" FontSize="13" Foreground="#52627A" VerticalAlignment="Center" Margin="6,0"/>
+                                    <TextBlock Grid.Column="3" Text="EVIDENCE" Visibility="Collapsed" FontSize="13" Foreground="#52627A" VerticalAlignment="Center" Margin="4,0"/>
+                                    <TextBlock Grid.Column="4" Text="CONF." Visibility="Collapsed" FontSize="13" Foreground="#52627A" VerticalAlignment="Center" Margin="4,0"/>
+                                </Grid>
+                                <ListBox x:Name="TimelineGrid" Grid.Row="1" ItemsSource="{Binding TimelineRows}" Background="White" BorderThickness="0"
+                                         ItemContainerStyle="{StaticResource HistoryTimelineItem}" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         SelectionChanged="TimelineGrid_SelectionChanged" automation:AutomationProperties.Name="Client history timeline">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1.15*"/><ColumnDefinition Width="4.9*"/><ColumnDefinition Width="1.8*"/><ColumnDefinition Width="0"/><ColumnDefinition Width="0"/><ColumnDefinition Width="1.15*"/></Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding EffectiveDateDisplay}" FontSize="13" Foreground="{StaticResource HistoryNavy}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="3,0,6,0"/>
+                                                <Grid Grid.Column="1" Margin="2,0,5,0"><Grid.ColumnDefinitions><ColumnDefinition Width="26"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                    <Border Width="1" Background="#D5E0ED" HorizontalAlignment="Left" Margin="13,-12,0,-12" IsHitTestVisible="False"/>
+                                                    <Grid Width="22" HorizontalAlignment="Center">
+                                                        <Border Width="20" Height="20" CornerRadius="10" Background="{Binding AccentBackground}" BorderBrush="{Binding AccentColor}" BorderThickness="1"/>
+                                                        <TextBlock Text="{Binding IconGlyph}" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{Binding AccentColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <Border Background="{Binding AccentBackground}" CornerRadius="5" Padding="4,1" HorizontalAlignment="Left" MaxWidth="160">
+                                                            <TextBlock Text="{Binding EventType}" FontSize="13" FontWeight="SemiBold" Foreground="{Binding AccentColor}" TextTrimming="CharacterEllipsis"/>
+                                                        </Border>
+                                                        <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource HistoryNavy}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                                        <TextBlock Text="{Binding Summary}" FontSize="13" Foreground="{StaticResource HistoryMuted}" TextTrimming="CharacterEllipsis"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <TextBlock Grid.Column="2" Text="{Binding PrimaryImpact}" FontSize="13" FontWeight="SemiBold" Foreground="#0C8B4A" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="5,0"/>
+                                                <StackPanel Grid.Column="3" Visibility="Collapsed" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center"><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource HistoryBlue}" FontSize="20"/><TextBlock Text="{Binding EvidenceCount}" FontSize="13" Foreground="{StaticResource HistoryNavy}" Margin="4,0,0,0"/></StackPanel>
+                                                <Border Grid.Column="4" Visibility="Collapsed" Background="#EAF8F0" CornerRadius="10" Padding="6,2" VerticalAlignment="Center" HorizontalAlignment="Center"><TextBlock Text="{Binding Confidence, StringFormat={}{0:P0}}" FontSize="13" FontWeight="SemiBold" Foreground="#16864F"/></Border>
+                                                <Button Grid.Column="5" Content="Details  >" Style="{StaticResource HistoryActionButton}" Height="42" Padding="4,3" FontSize="13" BorderThickness="0" Foreground="{StaticResource HistoryBlue}" Click="TimelineDetails_Click" automation:AutomationProperties.Name="{Binding Title, StringFormat=View details for {0}}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="EvolutionPanel" Grid.Column="1" Style="{StaticResource HistoryCard}" Padding="10" Margin="5,0,0,0">
+                        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <TextBlock Text="Evolution View" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}"/>
+                                <TextBlock Grid.Column="1" Text="View Full Screen  >" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource HistoryBlue}" Margin="10,1,0,0"/>
+                            </Grid>
+                            <TextBlock x:Name="EvolutionStatusText" Grid.Row="1" Text="Loading canonical history..." FontSize="10" Foreground="{StaticResource HistoryMuted}" Margin="0,2,0,5" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <ItemsControl x:Name="StructuredEvolutionList" ItemsSource="{Binding EvolutionTracks}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{StaticResource HistoryBorder}" BorderThickness="1" CornerRadius="7" Padding="8" Margin="0,0,0,7" Background="White">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Subject}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource HistoryBlue}"/>
+                                                        <ItemsControl ItemsSource="{Binding Steps}" Margin="0,5,0,0">
+                                                            <ItemsControl.ItemTemplate><DataTemplate>
+                                                                <Button Tag="{Binding EventId}" Click="EvolutionStep_Click" Style="{StaticResource HistoryActivityButton}" Height="78" Margin="0,2,0,0">
+                                                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="42"/><ColumnDefinition Width="*"/><ColumnDefinition Width="18"/></Grid.ColumnDefinitions>
+                                                                        <TextBlock Text="{Binding EffectiveDate, StringFormat=yyyy}" FontSize="13" Foreground="{StaticResource HistoryMuted}" VerticalAlignment="Center"/>
+                                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"><Border Background="#F3F5F8" CornerRadius="4" Padding="6,3"><TextBlock Text="{Binding PreviousValue}" FontSize="13"/></Border><TextBlock Text="  ->  " FontSize="13" Foreground="{StaticResource HistoryBlue}" VerticalAlignment="Center"/><Border Background="#EEF4FF" CornerRadius="4" Padding="6,3"><TextBlock Text="{Binding NewValue}" FontSize="13"/></Border></StackPanel>
+                                                                        <TextBlock Grid.Column="2" Text=">" FontSize="13" Foreground="{StaticResource HistoryBlue}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                                                    </Grid>
+                                                                </Button>
+                                                            </DataTemplate></ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <ItemsControl x:Name="EvolutionActivityList" ItemsSource="{Binding Presentation.EvolutionActivityEvents}"
+                                                  HorizontalContentAlignment="Stretch">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Tag="{Binding EventId}" Click="EvolutionStep_Click" Style="{StaticResource HistoryActivityButton}" Margin="0,0,0,7" automation:AutomationProperties.Name="{Binding Title}">
+                                                    <Grid HorizontalAlignment="Stretch">
+                                                        <Grid.ColumnDefinitions><ColumnDefinition Width="34"/><ColumnDefinition Width="*"/><ColumnDefinition Width="48"/><ColumnDefinition Width="16"/></Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                                        <Border Width="25" Height="25" CornerRadius="7" Background="{Binding AccentBackground}" VerticalAlignment="Center"><TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{Binding AccentColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                                        <Grid Grid.Column="1" Margin="0,0,8,0" VerticalAlignment="Center">
+                                                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0" Text="{Binding Category}" FontSize="10" LineHeight="12" FontWeight="SemiBold" Foreground="{Binding AccentColor}" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Category}"/>
+                                                            <TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="12" LineHeight="16" FontWeight="SemiBold" Foreground="{StaticResource HistoryNavy}" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}"/>
+                                                            <TextBlock Grid.Row="2" Text="{Binding Summary}" FontSize="10" LineHeight="12" Foreground="{StaticResource HistoryMuted}" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Summary}"/>
+                                                        </Grid>
+                                                        <TextBlock Grid.Column="2" Text="{Binding DateReference.Year}" FontSize="13" Foreground="{StaticResource HistoryMuted}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        <TextBlock Grid.Column="3" Text=">" FontSize="13" Foreground="{StaticResource HistoryBlue}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                                    </Grid>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource HistoryCard}" Padding="5" Margin="12,0,14,10">
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="History Replay" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}"/><Border Width="16" Height="16" CornerRadius="8" BorderBrush="{StaticResource HistoryBorder}" BorderThickness="1" Margin="7,0,0,0"><TextBlock Text="i" FontSize="13" Foreground="{StaticResource HistoryBlue}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></StackPanel>
+                <Grid Grid.Column="1" Margin="14,0,10,0" VerticalAlignment="Center">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <TextBlock Text="See the client's program as it existed on a selected date." FontSize="13" Foreground="{StaticResource HistoryMuted}" TextTrimming="CharacterEllipsis"/>
+                    <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Workspace.ReplayDisplayLabel}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource HistoryBlue}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Workspace.ReplaySupportSummary}" FontSize="13" Foreground="#A45D00" Margin="9,0,0,0" TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+                </Grid>
+                <DatePicker x:Name="ReplayDatePicker" Grid.Column="2" Width="140" Height="42" FontSize="13" automation:AutomationProperties.Name="As Of replay date"/>
+                <Button Grid.Column="3" Content="View" Style="{StaticResource HistoryPrimaryButton}" Height="42" MinWidth="72" Margin="7,0,0,0" Click="ApplyReplay_Click"/>
+                <Button Grid.Column="4" Content="Go to Current" Style="{StaticResource HistoryActionButton}" Height="42" MinWidth="112" Margin="7,0,0,0" Click="GoToCurrent_Click"/>
+            </Grid>
+        </Border>
+
+        <Border x:Name="DetailsDrawer" Grid.RowSpan="2" Grid.Column="1" Style="{StaticResource HistoryCard}" Visibility="Collapsed" Padding="0" Margin="5,8,10,10"
+                Focusable="True" automation:AutomationProperties.Name="History event details" automation:AutomationProperties.LiveSetting="Polite">
+            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <Border BorderBrush="{StaticResource HistoryBorder}" BorderThickness="0,0,0,1" Padding="9,7">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <Button Content="&lt;  Back to Timeline" Style="{StaticResource HistoryActionButton}" BorderThickness="0" Padding="2" HorizontalAlignment="Left" Click="CloseDrawer_Click"/>
+                        <TextBlock x:Name="PositionText" Grid.Column="1" Text="0 of 0" FontSize="13" Foreground="{StaticResource HistoryMuted}" VerticalAlignment="Center" Margin="5,0,7,0"/>
+                        <Button Grid.Column="2" Content="&lt;" Style="{StaticResource HistoryActionButton}" Width="22" Padding="1" BorderThickness="0" Click="Previous_Click" automation:AutomationProperties.Name="Previous history event"/>
+                        <Button Grid.Column="3" Content=">" Style="{StaticResource HistoryActionButton}" Width="22" Padding="1" BorderThickness="0" Click="Next_Click" automation:AutomationProperties.Name="Next history event"/>
+                        <Button x:Name="DrawerCloseButton" Grid.Column="4" Content="&#x00D7;" Style="{StaticResource HistoryActionButton}" Width="22" Padding="1" BorderThickness="0" FontSize="13" Click="CloseDrawer_Click" automation:AutomationProperties.Name="Close history details"/>
+                    </Grid>
+                </Border>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="11,10,11,12">
+                        <Grid Margin="0,0,0,9">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border x:Name="DrawerIconBackground" Background="#EEF4FF" CornerRadius="16" Width="32" Height="32" VerticalAlignment="Top"><TextBlock x:Name="DrawerIconText" Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource HistoryBlue}" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock x:Name="DrawerTitleText" Foreground="{StaticResource HistoryNavy}" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="DrawerTypeText" Foreground="{StaticResource HistoryBlue}" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="DrawerDateText" Foreground="{StaticResource HistoryMuted}" FontSize="13" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Expander x:Name="BeforeAfterSection" Header="Before / After" Visibility="Collapsed" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource HistoryNavy}">
+                            <ItemsControl x:Name="ChangesList" Margin="0,6,0,0">
+                                <ItemsControl.ItemTemplate><DataTemplate><Border Background="#F8FAFD" BorderBrush="{StaticResource HistoryBorder}" BorderThickness="1" CornerRadius="5" Padding="7,5" Margin="0,0,0,5"><TextBlock Text="{Binding}" FontSize="13" Foreground="{StaticResource HistoryNavy}" TextWrapping="Wrap"/></Border></DataTemplate></ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+
+                        <StackPanel x:Name="BusinessImpactSection">
+                            <TextBlock Text="Business Impact" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" Margin="0,9,0,0"/>
+                            <Border Background="#EAF8F0" BorderBrush="#BFE8D1" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,5,0,0"><TextBlock x:Name="ImpactText" FontSize="13" Foreground="#146B40" TextWrapping="Wrap"/></Border>
+                        </StackPanel>
+
+                        <TextBlock Text="Details" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" Margin="0,10,0,0"/>
+                        <Border Background="#F8FAFD" BorderBrush="{StaticResource HistoryBorder}" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,5,0,0"><TextBlock x:Name="DetailsText" FontSize="13" Foreground="{StaticResource HistoryMuted}" TextWrapping="Wrap"/></Border>
+
+                        <StackPanel x:Name="EvidenceSection">
+                            <TextBlock Text="Evidence &amp; Source" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" Margin="0,10,0,0"/>
+                            <ItemsControl x:Name="EvidenceList" Margin="0,5,0,0">
+                                <ItemsControl.ItemTemplate><DataTemplate><Grid Margin="0,0,0,5"><Grid.ColumnDefinitions><ColumnDefinition Width="20"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource HistoryBlue}" VerticalAlignment="Top"/><TextBlock Grid.Column="1" Text="{Binding}" FontSize="13" Foreground="{StaticResource HistoryMuted}" TextWrapping="Wrap"/></Grid></DataTemplate></ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="Open source  >" Style="{StaticResource HistoryActionButton}" Foreground="{StaticResource HistoryBlue}" HorizontalAlignment="Left" BorderThickness="0" Padding="0" Margin="0,3,0,0" Click="OpenSource_Click"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="RelatedRecordsSection">
+                            <TextBlock Text="Related Records" FontSize="13" FontWeight="Bold" Foreground="{StaticResource HistoryNavy}" Margin="0,10,0,0"/>
+                            <ItemsControl x:Name="RelatedList" Margin="0,5,0,0"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" FontSize="13" Foreground="{StaticResource HistoryMuted}" Margin="0,0,0,3"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                        </StackPanel>
+                        <UniformGrid x:Name="ReviewActions" Columns="4" Visibility="Collapsed" Margin="0,12,0,0"><Button Content="Approve" Style="{StaticResource HistoryPrimaryButton}" Margin="2"/><Button Content="Edit" Style="{StaticResource HistoryActionButton}" Margin="2"/><Button Content="Merge" Style="{StaticResource HistoryActionButton}" Margin="2"/><Button Content="Exclude" Style="{StaticResource HistoryActionButton}" Margin="2"/></UniformGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

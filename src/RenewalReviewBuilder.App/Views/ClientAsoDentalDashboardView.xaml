@@ -1,0 +1,120 @@
+<UserControl x:Class="RenewalReviewBuilder.App.Views.ClientAsoDentalDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F7F9FC">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AsoNavy" Color="#071B4D" />
+        <SolidColorBrush x:Key="AsoMuted" Color="#64748B" />
+        <SolidColorBrush x:Key="AsoBorder" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="AsoBlue" Color="#2563EB" />
+        <SolidColorBrush x:Key="AsoTeal" Color="#0F8B8D" />
+        <Style x:Key="AsoCard" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource AsoBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style x:Key="AsoLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AsoMuted}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <StackPanel Margin="0,0,0,14">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="Client Workspace" Foreground="{StaticResource AsoBlue}" FontSize="12" FontWeight="SemiBold" />
+                <TextBlock Text="  &gt;  " Style="{StaticResource AsoLabel}" />
+                <TextBlock Text="ASO Dental" Foreground="{StaticResource AsoNavy}" FontSize="12" FontWeight="SemiBold" />
+            </StackPanel>
+            <TextBlock Text="ASO Dental Cost" Foreground="{StaticResource AsoNavy}" FontSize="26" FontWeight="Bold" />
+            <TextBlock Text="{Binding HeaderSubtitle}" Style="{StaticResource AsoLabel}" FontSize="13" Margin="0,5,0,0" />
+        </StackPanel>
+
+        <Border Style="{StaticResource AsoCard}" Background="#EFF6FF" BorderBrush="#BFDBFE" Margin="0,0,0,14">
+            <TextBlock Text="{Binding EstimateNote}" Foreground="#1E3A8A" FontSize="12.5" TextWrapping="Wrap" />
+        </Border>
+
+        <Border Style="{StaticResource AsoCard}" Margin="0,0,0,14" Visibility="{Binding EmptyVisibility}">
+            <StackPanel HorizontalAlignment="Center" Margin="0,32">
+                <TextBlock Text="No saved ASO dental billing activity is available yet." Foreground="{StaticResource AsoNavy}" FontSize="18" FontWeight="Bold" TextAlignment="Center" />
+                <TextBlock Text="Add the carrier ASO billing folder to the renewal workflow and click Validate. Actual supported statement values will appear here automatically."
+                           Style="{StaticResource AsoLabel}" Width="620" TextAlignment="Center" Margin="0,8,0,0" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Visibility="{Binding DataVisibility}">
+            <UniformGrid Columns="4" Margin="0,0,0,14">
+                <Border Style="{StaticResource AsoCard}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Dental paid claims" Style="{StaticResource AsoLabel}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding PaidClaimsText}" Foreground="{StaticResource AsoNavy}" FontSize="24" FontWeight="Bold" Margin="0,7,0,0" />
+                        <TextBlock Text="{Binding PeriodLabel}" Style="{StaticResource AsoLabel}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource AsoCard}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Administration / billed fees" Style="{StaticResource AsoLabel}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding AdministrationFeeText}" Foreground="{StaticResource AsoBlue}" FontSize="24" FontWeight="Bold" Margin="0,7,0,0" />
+                        <TextBlock Text="{Binding FeeBasisText}" Style="{StaticResource AsoLabel}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource AsoCard}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="GST" Style="{StaticResource AsoLabel}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding GstText}" Foreground="{StaticResource AsoTeal}" FontSize="24" FontWeight="Bold" Margin="0,7,0,0" />
+                        <TextBlock Text="{Binding GstBasisText}" Style="{StaticResource AsoLabel}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource AsoCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalCostTitle}" Style="{StaticResource AsoLabel}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding TotalCostText}" Foreground="{StaticResource AsoNavy}" FontSize="24" FontWeight="Bold" Margin="0,7,0,0" />
+                        <TextBlock Text="{Binding TotalBasisText}" Style="{StaticResource AsoLabel}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <Border Style="{StaticResource AsoCard}">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,12" LastChildFill="False">
+                        <TextBlock Text="Monthly ASO Dental Cost Schedule" Foreground="{StaticResource AsoNavy}" FontSize="18" FontWeight="Bold" DockPanel.Dock="Left" />
+                        <TextBlock Text="{Binding RowCountText}" Style="{StaticResource AsoLabel}" DockPanel.Dock="Right" Margin="12,3,0,0" />
+                    </DockPanel>
+                    <DataGrid ItemsSource="{Binding MonthlyRows}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserResizeRows="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0"
+                              RowHeight="28"
+                              MinHeight="220">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="8,4" />
+                            </Style>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Padding" Value="8,6" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Service month" Binding="{Binding MonthText}" Width="130" />
+                            <DataGridTextColumn Header="Paid dental claims" Binding="{Binding PaidClaimsText}" Width="160" />
+                            <DataGridTextColumn Header="Fees" Binding="{Binding AdministrationFeeText}" Width="140" />
+                            <DataGridTextColumn Header="GST" Binding="{Binding GstText}" Width="100" />
+                            <DataGridTextColumn Header="Interest / credit" Binding="{Binding InterestCreditText}" Width="140" />
+                            <DataGridTextColumn Header="ASO cost" Binding="{Binding TotalCostText}" Width="150" />
+                            <DataGridTextColumn Header="Source" Binding="{Binding SourceFileName}" Width="520" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

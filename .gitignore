@@ -1,0 +1,70 @@
+# Build, test, and local tool state
+**/bin/
+**/obj/
+.artifacts/
+.build*/
+.build-cache/
+.manual-build/
+buildtmp/
+dist/
+output/
+outputs/
+TestResults/
+.vs/
+.dotnet/
+.dotnet-sdk/
+.dotnet-home/
+.nuget/
+.offline-packages/
+.codex*/
+.tmp*/
+tmp/
+.visual-verification/
+**/__pycache__/
+*.py[cod]
+*.trx
+*.log
+*.inspect.ndjson
+*.zip
+*.7z
+
+# Downloaded SDK installers and local IDE files
+.dotnet-install.ps1
+.dotnet-sdk-win-x64.tar.gz
+.dotnet-sdk-*.zip
+*.user
+*.suo
+*.bak
+*_wpftmp.csproj
+
+# Runtime databases, local configuration, and secrets
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+secrets.json
+
+# Client/source documents and generated Office files must not be committed.
+*.pdf
+*.ppt
+*.pptx
+*.pptm
+*.xls
+*.xlsx
+*.xlsm
+*.doc
+*.docx
+*.csv
+
+# Versioned application-owned templates and documentation fixtures.
+!config/templates/Total Cost ComparisonMktSvy.xlsx
+
+# Historical working copies are not product source.
+Backups/
+**/Backups/
+Renewal App - Test/

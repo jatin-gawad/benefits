@@ -1,0 +1,73 @@
+<Window x:Class="RenewalReviewBuilder.App.Views.HcsaCalculatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="HCSA Funding Calculator"
+        Width="1050"
+        Height="590"
+        MinWidth="900"
+        MinHeight="460"
+        WindowStartupLocation="CenterOwner"
+        Background="#F7F9FC">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="Health Spending Account (HCSA)" FontSize="22" FontWeight="Bold" Foreground="#12324A" />
+            <TextBlock Text="Enter one row for each eligible class. The calculated annual funding, usage assumption, and administration fee become HCSA rate lines in the Renewal Review Workbook and PowerPoint tables." TextWrapping="Wrap" Margin="0,6,0,0" Foreground="#526274" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1"
+                  x:Name="ClassesGrid"
+                  ItemsSource="{Binding Classes}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserSortColumns="False"
+                  CanUserReorderColumns="False"
+                  IsReadOnly="False"
+                  SelectionMode="Single"
+                  SelectionUnit="CellOrRowHeader"
+                  HeadersVisibility="Column"
+                  Margin="0,0,0,12"
+                  RowHeight="34">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Class" Binding="{Binding ClassName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" Width="1.2*" />
+                <DataGridTextColumn Header="Eligible Employees" Binding="{Binding EligibleEmployees, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" Width="*" />
+                <DataGridTextColumn Header="Current Annual Credit" Binding="{Binding CurrentAnnualCredit, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" IsReadOnly="False" Width="1.15*" />
+                <DataGridTextColumn Header="Renewal Annual Credit" Binding="{Binding RenewalAnnualCredit, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" IsReadOnly="False" Width="1.15*" />
+                <DataGridTextColumn Header="Usage %" Binding="{Binding UsagePercent, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" IsReadOnly="False" Width="0.75*" />
+                <DataGridTextColumn Header="Admin Fee %" Binding="{Binding AdministrationFeePercent, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" IsReadOnly="False" Width="0.85*" />
+                <DataGridTextColumn Header="Current Annual Cost" Binding="{Binding CurrentAnnualCost, StringFormat={}{0:C2}}" IsReadOnly="True" Width="1.2*" />
+                <DataGridTextColumn Header="Renewal Annual Cost" Binding="{Binding RenewalAnnualCost, StringFormat={}{0:C2}}" IsReadOnly="True" Width="1.2*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="2" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Add Class" Padding="16,8" Margin="0,0,8,0" Click="AddClass_Click" />
+            <Button Grid.Column="1" Content="Remove Selected" Padding="16,8" Click="RemoveSelected_Click" />
+            <TextBlock Grid.Column="3" Text="Current annual: " VerticalAlignment="Center" Foreground="#526274" />
+            <TextBlock Grid.Column="4" x:Name="CurrentAnnualTotalTextBlock" Text="$0.00" Margin="6,0,22,0" VerticalAlignment="Center" FontWeight="Bold" Foreground="#12324A" />
+            <TextBlock Grid.Column="5" Text="Renewal annual: " VerticalAlignment="Center" Foreground="#526274" />
+            <TextBlock Grid.Column="6" x:Name="RenewalAnnualTotalTextBlock" Text="$0.00" Margin="6,0,0,0" VerticalAlignment="Center" FontWeight="Bold" Foreground="#0F766E" />
+        </Grid>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancel" MinWidth="100" Padding="16,8" Margin="0,0,10,0" IsCancel="True" />
+            <Button Content="Apply HCSA to Renewal" MinWidth="180" Padding="16,8" Background="#0F766E" Foreground="White" Click="Apply_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

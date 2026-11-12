@@ -1,0 +1,3 @@
+namespace RenewalReviewBuilder.App.Models.History;
+public sealed class HistoryEvolutionTrack { public string Subject { get; init; } = ""; public IReadOnlyList<HistoryEvolutionStep> Steps { get; init; } = []; }
+public sealed class HistoryEvolutionStep { public string EventId { get; init; } = ""; public DateOnly? EffectiveDate { get; init; } public string PreviousValue { get; init; } = ""; public string NewValue { get; init; } = ""; public string Unit { get; init; } = ""; public string Direction { get; init; } = ""; public string RelatedRenewal { get; init; } = ""; public int EvidenceCount { get; init; } public bool IsSelected { get; init; } }

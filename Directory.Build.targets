@@ -1,0 +1,9 @@
+<Project>
+  <!--
+    OneDrive/Controlled Folder Access can block MSBuild's clean-tracking file writes
+    from a locally downloaded SDK. Build artifacts are ignored, so clean tracking is
+    not required for this app.
+  -->
+  <Target Name="_CleanRecordFileWrites" />
+</Project>
+

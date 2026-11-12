@@ -1,0 +1,94 @@
+{
+  "carrier_name": "Default Generic",
+  "carrier_key": "default_generic",
+  "aliases": [],
+  "file_name_keywords": [],
+  "section_keywords": {
+    "premium_summary": [
+      "premium summary",
+      "monthly premium",
+      "annual premium",
+      "cost summary",
+      "total premium"
+    ],
+    "rate_summary": [
+      "rate summary",
+      "proposed rates",
+      "monthly rates",
+      "rate table"
+    ],
+    "plan_design": [
+      "benefit summary",
+      "schedule of benefits",
+      "plan design",
+      "coverage summary"
+    ],
+    "demographics": [
+      "demographics",
+      "lives",
+      "employees",
+      "insured lives",
+      "volume"
+    ],
+    "underwriting": [
+      "underwriting assumptions",
+      "assumptions",
+      "conditions",
+      "caveats"
+    ],
+    "pooling_retention": [
+      "pooling",
+      "large amount pooling",
+      "stop loss",
+      "retention",
+      "target loss ratio",
+      "tlr"
+    ]
+  },
+  "field_mappings": {
+    "client_name": ["client", "policyholder", "group name"],
+    "carrier_name": ["carrier", "insurer", "insurance company"],
+    "proposal_date": ["proposal date", "quote date"],
+    "effective_date": ["effective date", "renewal date", "proposal effective date"],
+    "monthly_premium": ["monthly premium", "total monthly premium", "monthly cost"],
+    "annual_premium": ["annual premium", "total annual premium", "annual cost"],
+    "rate": ["rate", "proposed rate", "monthly rate"],
+    "lives": ["lives", "employees", "insured lives", "certificate count"],
+    "volume": ["volume", "benefit volume", "insured volume"],
+    "pooling_level": ["pooling level", "pooling threshold", "large amount pooling"],
+    "pooling_charge": ["pooling charge", "pooling fee"],
+    "commission": ["commission", "broker commission"],
+    "retention": ["retention", "expense charge", "admin charge"],
+    "target_loss_ratio": ["target loss ratio", "tlr"],
+    "rate_guarantee": ["rate guarantee", "rate guarantee period", "guarantee"],
+    "pooled_benefits": ["pooled benefits", "pooled"],
+    "experience_rated_benefits": ["experience-rated benefits", "experience rated benefits", "experience-rated", "experience rated"],
+    "ibnr": ["ibnr", "incurred but not reported"],
+    "rate_caps": ["rate caps", "renewal cap", "rate cap"],
+    "first_renewal_cap": ["1st renewal", "first renewal cap", "first renewal"],
+    "second_renewal_cap": ["2nd renewal", "second renewal cap", "second renewal"]
+  },
+  "benefit_mappings": {
+    "Extended Health Care": ["ehc", "extended health", "extended health care", "health"],
+    "Dental Care": ["dental", "dental care"],
+    "Employee Life": ["life", "employee life", "basic life"],
+    "Dependent Life": ["dependent life", "dep life"],
+    "AD&D": ["ad&d", "accidental death", "accidental death and dismemberment"],
+    "Long Term Disability": ["ltd", "long term disability"],
+    "Short Term Disability": ["std", "short term disability"],
+    "Critical Illness": ["critical illness", "ci"],
+    "EAP": ["eap", "employee assistance program"],
+    "Virtual Care": ["virtual care", "telemedicine", "online access"]
+  },
+  "tier_mappings": {
+    "Single": ["single", "employee only", "ee"],
+    "Couple": ["couple", "employee plus spouse", "ee + spouse"],
+    "Family": ["family", "employee plus family", "ee + family"],
+    "Employee plus child": ["employee plus child", "ee + child"]
+  },
+  "confidence_rules": {
+    "high": "exact label match and numeric value found nearby",
+    "medium": "similar label match and numeric value found in same row or table",
+    "low": "keyword found but value location is uncertain"
+  }
+}

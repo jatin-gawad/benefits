@@ -1,0 +1,61 @@
+{
+  "carrier_name": "Equitable",
+  "carrier_key": "equitable",
+  "aliases": [
+    "equitable",
+    "equitable life",
+    "equitable life of canada",
+    "the equitable life insurance company of canada"
+  ],
+  "file_name_keywords": [
+    "equitable",
+    "equitable life"
+  ],
+  "section_keywords": {
+    "premium_summary": ["premium summary", "monthly premium", "annual premium", "cost summary"],
+    "rate_summary": ["rate summary", "proposed rates", "renewal rates", "rate table"],
+    "plan_design": ["plan design", "benefit summary", "schedule of benefits"],
+    "demographics": ["lives", "employees", "insured lives", "volume"],
+    "underwriting": ["underwriting assumptions", "assumptions", "caveats"],
+    "pooling_retention": ["pooling", "stop loss", "retention", "target loss ratio", "tlr"]
+  },
+  "field_mappings": {
+    "client_name": ["client", "policyholder", "group name", "plan sponsor"],
+    "carrier_name": ["carrier", "insurer", "insurance company"],
+    "proposal_date": ["proposal date", "quote date", "prepared"],
+    "effective_date": ["effective date", "renewal date"],
+    "monthly_premium": ["monthly premium", "total monthly premium", "monthly cost"],
+    "annual_premium": ["annual premium", "total annual premium", "annual cost"],
+    "rate": ["rate", "proposed rate", "monthly rate"],
+    "lives": ["lives", "employees", "insured lives", "certificate count"],
+    "volume": ["volume", "benefit amount", "insured volume"],
+    "pooling_level": ["pooling level", "pooling threshold", "stop loss"],
+    "pooling_charge": ["pooling charge", "pooling fee"],
+    "commission": ["commission", "broker commission"],
+    "retention": ["retention", "expense charge", "admin charge"],
+    "target_loss_ratio": ["target loss ratio", "tlr"]
+  },
+  "benefit_mappings": {
+    "Extended Health Care": ["ehc", "extended health", "health"],
+    "Dental Care": ["dental", "dental care"],
+    "Employee Life": ["life", "employee life", "basic life"],
+    "Dependent Life": ["dependent life", "dep life"],
+    "AD&D": ["ad&d", "accidental death"],
+    "Long Term Disability": ["ltd", "long term disability"],
+    "Short Term Disability": ["std", "short term disability"],
+    "Critical Illness": ["critical illness", "ci"],
+    "EAP": ["eap", "employee assistance program"],
+    "Virtual Care": ["virtual care", "telemedicine"]
+  },
+  "tier_mappings": {
+    "Single": ["single", "employee only", "ee"],
+    "Couple": ["couple", "ee + spouse", "employee plus spouse"],
+    "Family": ["family", "ee + family", "employee plus family"],
+    "Employee plus child": ["employee plus child", "ee + child"]
+  },
+  "confidence_rules": {
+    "high": "exact label match and numeric value found nearby",
+    "medium": "similar label match and numeric value found in same row or table",
+    "low": "keyword found but value location is uncertain"
+  }
+}

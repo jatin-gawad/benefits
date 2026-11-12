@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>RenewalReviewBuilder.App</AssemblyName>
+    <RootNamespace>RenewalReviewBuilder.App</RootNamespace>
+    <ApplicationIcon></ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
+    <PackageReference Include="PdfPig" Version="0.1.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\WestlandBenefitsLogo.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\WestlandBenefitsLogoReverse.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\WestlandBenefitsHorizontalColour.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\proposal_engine\**\*.py" Link="proposal_engine\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\proposal_engine\booklet_plan_design\*.json" Link="proposal_engine\booklet_plan_design\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\proposal_engine\booklet_plan_design\*.cmd" Link="proposal_engine\booklet_plan_design\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\config\carriers\*.json" Link="config\carriers\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\config\benefits\*.json" Link="config\benefits\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\config\flexible_benefits\*.json" Link="config\flexible_benefits\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\config\templates\*.xlsx" Link="config\templates\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
